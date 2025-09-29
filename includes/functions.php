@@ -11,6 +11,7 @@ function attemptLogin($cpf, $password) {
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
+        $_SESSION['admin'] = $user['admin']; 
         $_SESSION['logged_in'] = true;
         return true;
     }
