@@ -1,2 +1,14 @@
-db.php
-.gitignore
+# Arquivos de ambiente
+.env
+.env.production
+
+# Logs
+*.log
+
+# Dependências
+vendor/
+node_modules/
+
+# Sistema
+.DS_Store
+Thumbs.db
