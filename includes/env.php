@@ -3,7 +3,7 @@ class Env {
     private static $loaded = false;
     private static $vars = [];
     
-    public static function load($path = '../.env') {  // ← MUDEI AQUI: '../.env'
+    public static function load($path = '../.env') {
         if (self::$loaded) return;
         
         if (!file_exists($path)) {

@@ -27,7 +27,7 @@ $appUrl = Env::get('APP_URL', 'http://localhost:8000');
                 <p class="text-gray-600 mt-2">Sistema seguro de autenticação</p>
             </div>
             
-            <h2 class="text-4xl font-bold text-center text-gray-800 mb-6">🎉 Logado com Sucesso!</h2>
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-6">Logado com Sucesso!!!!</h2>
             
             <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg mb-8">
                 <div class="text-green-700 text-lg font-semibold">
@@ -40,7 +40,7 @@ $appUrl = Env::get('APP_URL', 'http://localhost:8000');
             
             <!-- Informações do usuário -->
             <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">👤 Seus Dados</h3>
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Seus Dados</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <p class="text-sm text-gray-600">ID</p>
@@ -76,10 +76,10 @@ $appUrl = Env::get('APP_URL', 'http://localhost:8000');
                         <h4 class="font-semibold mb-2">Estatísticas</h4>
                         <p class="text-sm text-gray-600">Visualizar relatórios do sistema</p>
                     </div>
-                    <div class="bg-white p-4 rounded border">
-                        <h4 class="font-semibold mb-2">Gerenciar Usuários</h4>
-                        <p class="text-sm text-gray-600">Administrar contas de usuários</p>
-                    </div>
+                    <a href="admin.php" class="bg-white p-4 rounded border hover:bg-blue-50 hover:border-blue-200 transition cursor-pointer block">
+                        <h4 class="font-semibold mb-2">👥 Gerenciar Usuários</h4>
+                        <p class="text-sm text-gray-600">CRUD completo de usuários</p>
+                    </a>
                 </div>
             </div>
             <?php endif; ?>
@@ -88,10 +88,6 @@ $appUrl = Env::get('APP_URL', 'http://localhost:8000');
                 <a href="logout.php" 
                    class="inline-flex items-center px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transform hover:-translate-y-1 transition duration-300">
                     Sair do Sistema
-                </a>
-                <a href="login.php" 
-                   class="inline-flex items-center px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transform hover:-translate-y-1 transition duration-300">
-                    Página de Login
                 </a>
             </div>
         </div>
