@@ -77,6 +77,7 @@ if (isset($_GET['toggle_admin'])) {
         }
     }
 }
+
 $stmt = $pdo->query("SELECT * FROM usuarios ORDER BY id");
 $usuarios = $stmt->fetchAll();
 $editar_usuario = null;
@@ -88,71 +89,109 @@ if (isset($_GET['editar'])) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html class="h-full">
 <head>
     <title>Gerenciar Usuários - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        light: {
+                            primary: '#f8f4f0',
+                            secondary: '#fffaf5', 
+                            accent: '#667eea',
+                            text: '#5a4d3a',
+                            border: '#e8dfd5'
+                        },
+                        dark: {
+                            primary: '#1a1a1a',
+                            secondary: '#2d2d2d',
+                            accent: '#8b5cf6',
+                            text: '#e5e5e5',
+                            border: '#404040'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="max-w-6xl mx-auto py-8 px-4">
-        <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+<body class="h-full bg-light-primary dark:bg-dark-primary transition-colors duration-300">
+    <!-- Toggle Theme - BOTÃO MENOR -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="themeToggle" class="p-2 rounded-full bg-light-accent dark:bg-dark-accent text-white shadow-lg hover:scale-110 transition-transform text-sm">
+            <span class="dark:hidden">🌙</span>
+            <span class="hidden dark:inline">☀️</span>
+        </button>
+    </div>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Header -->
+        <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 mb-6 border border-light-border dark:border-dark-border transition-all">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-800"> Gerenciar Usuários</h1>
-                    <p class="text-gray-600 mt-2">Painel administrativo - CRUD completo</p>
+                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">👑 Gerenciar Usuários</h1>
+                    <p class="text-light-text/70 dark:text-dark-text/70 mt-1">Painel administrativo - CRUD completo</p>
                 </div>
-                <div class="space-x-4">
-                    <a href="dashboard.php" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition">
-                        Voltar ao Dashboard
+                <div class="space-x-3">
+                    <a href="dashboard.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
+                        ← Voltar
                     </a>
-                    <a href="logout.php" class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition">
-                         Sair
+                    <a href="logout.php" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition text-sm">
+                        🚪 Sair
                     </a>
                 </div>
             </div>
         </div>
+
+        <!-- Alertas -->
         <?php if ($error): ?>
-            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded">
-                <div class="text-red-700">❌ <?php echo $error; ?></div>
+            <div class="bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 p-4 mb-6 rounded">
+                <div class="text-red-700 dark:text-red-300">❌ <?php echo $error; ?></div>
             </div>
         <?php endif; ?>
 
         <?php if ($success): ?>
-            <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded">
-                <div class="text-green-700"> <?php echo $success; ?></div>
+            <div class="bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 p-4 mb-6 rounded">
+                <div class="text-green-700 dark:text-green-300">✅ <?php echo $success; ?></div>
             </div>
         <?php endif; ?>
-        <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">
+
+        <!-- Formulário Adicionar/Editar -->
+        <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 mb-6 border border-light-border dark:border-dark-border transition-all">
+            <h2 class="text-xl font-bold text-light-text dark:text-dark-text mb-4">
                 <?php echo $editar_usuario ? '✏️ Editar Usuário' : '➕ Adicionar Usuário'; ?>
             </h2>
             
-            <form method="post" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <?php if ($editar_usuario): ?>
                     <input type="hidden" name="id" value="<?php echo $editar_usuario['id']; ?>">
                 <?php endif; ?>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">CPF:</label>
+                    <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">CPF:</label>
                     <input type="text" name="cpf" required maxlength="11"
                            value="<?php echo $editar_usuario ? $editar_usuario['cpf'] : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                           class="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border rounded-lg focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent focus:border-transparent transition text-light-text dark:text-dark-text placeholder-gray-500 dark:placeholder-gray-400"
                            placeholder="Digite o CPF">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nome:</label>
+                    <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Nome:</label>
                     <input type="text" name="username" required
                            value="<?php echo $editar_usuario ? $editar_usuario['username'] : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                           class="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border rounded-lg focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent focus:border-transparent transition text-light-text dark:text-dark-text placeholder-gray-500 dark:placeholder-gray-400"
                            placeholder="Digite o nome">
                 </div>
 
                 <?php if (!$editar_usuario): ?>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Senha:</label>
+                    <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Senha:</label>
                     <input type="password" name="password" required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                           class="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border rounded-lg focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent focus:border-transparent transition text-light-text dark:text-dark-text placeholder-gray-500 dark:placeholder-gray-400"
                            placeholder="Mínimo 6 caracteres">
                 </div>
                 <?php endif; ?>
@@ -160,70 +199,72 @@ if (isset($_GET['editar'])) {
                 <div class="flex items-center">
                     <input type="checkbox" name="admin" id="admin" 
                            <?php echo ($editar_usuario && $editar_usuario['admin']) ? 'checked' : ''; ?>
-                           class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                    <label for="admin" class="ml-2 text-sm font-medium text-gray-700">Usuário Administrador</label>
+                           class="w-4 h-4 text-light-accent dark:text-dark-accent border-light-border dark:border-dark-border rounded focus:ring-light-accent dark:focus:ring-dark-accent bg-white dark:bg-gray-800">
+                    <label for="admin" class="ml-2 text-sm font-medium text-light-text dark:text-dark-text">Usuário Administrador</label>
                 </div>
 
-                <div class="md:col-span-2 flex space-x-4">
+                <div class="md:col-span-2 flex space-x-3">
                     <button type="submit" name="<?php echo $editar_usuario ? 'editar' : 'adicionar'; ?>"
-                            class="bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transform hover:-translate-y-1 transition duration-300">
+                            class="bg-light-accent dark:bg-dark-accent text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transform hover:-translate-y-0.5 transition-all duration-300 shadow-lg text-sm">
                         <?php echo $editar_usuario ? '💾 Atualizar' : '➕ Adicionar'; ?>
                     </button>
                     
                     <?php if ($editar_usuario): ?>
-                        <a href="admin.php" class="bg-gray-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-600 transition">
-                         Cancelar
+                        <a href="admin.php" class="bg-gray-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-600 transition text-sm">
+                            ❌ Cancelar
                         </a>
                     <?php endif; ?>
                 </div>
             </form>
         </div>
-        <div class="bg-white rounded-2xl shadow-xl p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Lista de Usuários</h2>
+
+        <!-- Lista de Usuários -->
+        <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 border border-light-border dark:border-dark-border transition-all">
+            <h2 class="text-xl font-bold text-light-text dark:text-dark-text mb-4">📋 Lista de Usuários</h2>
             
             <div class="overflow-x-auto">
                 <table class="w-full table-auto">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-white dark:bg-gray-800">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CPF</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Cadastro</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-light-text dark:text-dark-text uppercase tracking-wider">ID</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-light-text dark:text-dark-text uppercase tracking-wider">CPF</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-light-text dark:text-dark-text uppercase tracking-wider">Nome</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-light-text dark:text-dark-text uppercase tracking-wider">Admin</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-light-text dark:text-dark-text uppercase tracking-wider">Data Cadastro</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-light-text dark:text-dark-text uppercase tracking-wider">Ações</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="divide-y divide-light-border dark:divide-dark-border">
                         <?php foreach ($usuarios as $usuario): ?>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo $usuario['id']; ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo $usuario['cpf']; ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($usuario['username']); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <tr class="hover:bg-white dark:hover:bg-gray-800 transition-colors">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-light-text dark:text-dark-text"><?php echo $usuario['id']; ?></td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-light-text dark:text-dark-text"><?php echo $usuario['cpf']; ?></td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-light-text dark:text-dark-text"><?php echo htmlspecialchars($usuario['username']); ?></td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm">
                                 <?php if ($usuario['admin']): ?>
-                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">✅ Admin</span>
+                                    <span class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-2 py-1 rounded-full text-xs font-semibold">✅ Admin</span>
                                 <?php else: ?>
-                                    <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold">❌ Usuário</span>
+                                    <span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-2 py-1 rounded-full text-xs font-semibold">❌ Usuário</span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-light-text dark:text-dark-text">
                                 <?php echo date('d/m/Y H:i', strtotime($usuario['create_at'])); ?>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium space-x-1">
                                 <a href="admin.php?editar=<?php echo $usuario['id']; ?>" 
-                                   class="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded">✏️</a>
+                                   class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded text-xs transition-colors">✏️</a>
                                 
                                 <a href="admin.php?toggle_admin=<?php echo $usuario['id']; ?>" 
-                                   class="text-purple-600 hover:text-purple-900 bg-purple-50 px-3 py-1 rounded">
+                                   class="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 bg-purple-50 dark:bg-purple-900/30 px-2 py-1 rounded text-xs transition-colors">
                                     <?php echo $usuario['admin'] ? '👤' : '👑'; ?>
                                 </a>
                                 
                                 <?php if ($usuario['id'] != $_SESSION['user_id']): ?>
                                     <a href="admin.php?excluir=<?php echo $usuario['id']; ?>" 
                                        onclick="return confirm('Tem certeza que deseja excluir este usuário?')"
-                                       class="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1 rounded">🗑️</a>
+                                       class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded text-xs transition-colors">🗑️</a>
                                 <?php else: ?>
-                                    <span class="text-gray-400 bg-gray-100 px-3 py-1 rounded">👤 Você</span>
+                                    <span class="text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">👤 Você</span>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -233,7 +274,25 @@ if (isset($_GET['editar'])) {
             </div>
         </div>
     </div>
+
     <script>
+        // Toggle de tema
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Verificar tema salvo
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+
+        // Alternar tema
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        });
+
         function confirmAction(message) {
             return confirm(message);
         }
