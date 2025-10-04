@@ -23,9 +23,9 @@ if (isset($_POST['adicionar'])) {
         }
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("INSERT INTO usuarios (cpf, username, password, admin) VALUES (?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO php_bd.usuarios (cpf, username, password, admin) VALUES (?, ?, ?, ?)");
         $stmt->execute([$cpf, $username, $hashedPassword, $admin]);
-        
+
         $success = "Usuário adicionado com sucesso!";
     } catch (Exception $e) {
         $error = "Erro ao adicionar: " . $e->getMessage();
@@ -39,7 +39,7 @@ if (isset($_POST['editar'])) {
     $admin = isset($_POST['admin']) ? 1 : 0;
 
     try {
-        $stmt = $pdo->prepare("UPDATE usuarios SET username = ?, cpf = ?, admin = ? WHERE id = ?");
+        $stmt = $pdo->prepare("UPDATE php_bd.usuarios SET username = ?, cpf = ?, admin = ? WHERE id = ?");
         $stmt->execute([$username, $cpf, $admin, $id]);
         $success = "Usuário atualizado com sucesso!";
     } catch (Exception $e) {
@@ -54,7 +54,7 @@ if (isset($_GET['excluir'])) {
         $error = "Você não pode excluir sua própria conta!";
     } else {
         try {
-            $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = ?");
+            $stmt = $pdo->prepare("DELETE FROM php_bd.usuarios WHERE id = ?");
             $stmt->execute([$id]);
             $success = "Usuário excluído com sucesso!";
         } catch (Exception $e) {
@@ -69,7 +69,7 @@ if (isset($_GET['toggle_admin'])) {
         $error = "Você não pode remover seus próprios privilégios de admin!";
     } else {
         try {
-            $stmt = $pdo->prepare("UPDATE usuarios SET admin = NOT admin WHERE id = ?");
+            $stmt = $pdo->prepare("UPDATE php_bd.usuarios SET admin = NOT admin WHERE id = ?");
             $stmt->execute([$id]);
             $success = "Status de admin alterado com sucesso!";
         } catch (Exception $e) {
@@ -78,11 +78,11 @@ if (isset($_GET['toggle_admin'])) {
     }
 }
 
-$stmt = $pdo->query("SELECT * FROM usuarios ORDER BY id");
+$stmt = $pdo->query("SELECT * FROM php_bd.usuarios ORDER BY id");
 $usuarios = $stmt->fetchAll();
 $editar_usuario = null;
 if (isset($_GET['editar'])) {
-    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT * FROM php_bd.usuarios WHERE id = ?");
     $stmt->execute([$_GET['editar']]);
     $editar_usuario = $stmt->fetch();
 }
@@ -120,7 +120,6 @@ if (isset($_GET['editar'])) {
     </script>
 </head>
 <body class="h-full bg-light-primary dark:bg-dark-primary transition-colors duration-300">
-    <!-- Toggle Theme - BOTÃO MENOR -->
     <div class="fixed top-4 right-4 z-50">
         <button id="themeToggle" class="p-2 rounded-full bg-light-accent dark:bg-dark-accent text-white shadow-lg hover:scale-110 transition-transform text-sm">
             <span class="dark:hidden">🌙</span>
@@ -129,25 +128,22 @@ if (isset($_GET['editar'])) {
     </div>
 
     <div class="max-w-7xl mx-auto py-6 px-4">
-        <!-- Header -->
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 mb-6 border border-light-border dark:border-dark-border transition-all">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">👑 Gerenciar Usuários</h1>
+                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">Gerenciar Usuários</h1>
                     <p class="text-light-text/70 dark:text-dark-text/70 mt-1">Painel administrativo - CRUD completo</p>
                 </div>
                 <div class="space-x-3">
                     <a href="dashboard.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
-                        ← Voltar
+                        Voltar
                     </a>
                     <a href="logout.php" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition text-sm">
-                        🚪 Sair
+                        Sair
                     </a>
                 </div>
             </div>
         </div>
-
-        <!-- Alertas -->
         <?php if ($error): ?>
             <div class="bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 p-4 mb-6 rounded">
                 <div class="text-red-700 dark:text-red-300">❌ <?php echo $error; ?></div>
@@ -159,8 +155,6 @@ if (isset($_GET['editar'])) {
                 <div class="text-green-700 dark:text-green-300">✅ <?php echo $success; ?></div>
             </div>
         <?php endif; ?>
-
-        <!-- Formulário Adicionar/Editar -->
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 mb-6 border border-light-border dark:border-dark-border transition-all">
             <h2 class="text-xl font-bold text-light-text dark:text-dark-text mb-4">
                 <?php echo $editar_usuario ? '✏️ Editar Usuário' : '➕ Adicionar Usuário'; ?>
@@ -218,10 +212,8 @@ if (isset($_GET['editar'])) {
             </form>
         </div>
 
-        <!-- Lista de Usuários -->
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 border border-light-border dark:border-dark-border transition-all">
-            <h2 class="text-xl font-bold text-light-text dark:text-dark-text mb-4">📋 Lista de Usuários</h2>
-            
+            <h2 class="text-xl font-bold text-light-text dark:text-dark-text mb-4">Lista de Usuários</h2>
             <div class="overflow-x-auto">
                 <table class="w-full table-auto">
                     <thead class="bg-white dark:bg-gray-800">
@@ -276,18 +268,15 @@ if (isset($_GET['editar'])) {
     </div>
 
     <script>
-        // Toggle de tema
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
 
-        // Verificar tema salvo
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             html.classList.add('dark');
         } else {
             html.classList.remove('dark');
         }
 
-        // Alternar tema
         themeToggle.addEventListener('click', () => {
             html.classList.toggle('dark');
             localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
