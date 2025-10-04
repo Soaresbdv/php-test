@@ -2,9 +2,9 @@
 session_start();
 
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-    header("Location: pages/dashboard.php");
+    header("Location: app/dashboard/dashboard.php");
 } else {
-    header("Location: pages/login.php");
+    header("Location: app/auth/login.php");
 }
 exit;
 ?>
