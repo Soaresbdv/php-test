@@ -64,7 +64,7 @@ $produtos = $stmt->fetchAll();
                 </div>
                 <div class="space-x-3">
                     <a href="dashboard.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
-                        ← Voltar
+                        Voltar
                     </a>
                 </div>
             </div>
@@ -80,6 +80,19 @@ $produtos = $stmt->fetchAll();
             <?php else: ?>
                 <?php foreach ($produtos as $produto): ?>
                 <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-lg p-6 border border-light-border dark:border-dark-border hover:shadow-xl transition-all duration-300">
+                    
+                    <?php if (!empty($produto['foto'])): ?>
+                        <div class="mb-4">
+                            <img src="../<?php echo htmlspecialchars($produto['foto']); ?>" 
+                                 alt="Foto do produto" 
+                                 class="w-full h-48 object-cover rounded-xl mb-3">
+                        </div>
+                    <?php else: ?>
+                        <div class="mb-4 bg-gray-200 dark:bg-gray-700 h-48 rounded-xl flex items-center justify-center">
+                            <span class="text-gray-500 dark:text-gray-400 text-4xl">🖼️</span>
+                        </div>
+                    <?php endif; ?>
+
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-semibold">
@@ -112,6 +125,7 @@ $produtos = $stmt->fetchAll();
                             </div>
                             <?php endif; ?>
                         </div>
+
                         <div class="border-t border-light-border dark:border-dark-border pt-3">
                             <div class="flex justify-between items-center text-sm">
                                 <div>
