@@ -1,16 +1,25 @@
 <?php
-require_once '../includes/auth.php';
-require_once '../includes/functions.php';
-require_once '../includes/env.php';
-
+require_once '../../includes/bootstrap.php';
 redirectIfNotLogged();
 
 $pdo = getDB();
 $error = '';
 $success = '';
-$uploadDir = '../uploads/';
-if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+
+if (!isset($_GET['id'])) {
+    header("Location: meus_produtos.php");
+    exit;
+}
+
+$produto_id = $_GET['id'];
+$stmt = $pdo->prepare("SELECT * FROM php_bd.produtos WHERE id_camiseta = ? AND id_usuario = ?");
+$stmt->execute([$produto_id, $_SESSION['user_id']]);
+$produto = $stmt->fetch();
+
+if (!$produto) {
+    $_SESSION['error'] = "Produto não encontrado ou você não tem permissão para editá-lo!";
+    header("Location: meus_produtos.php");
+    exit;
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -20,7 +29,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cor = $_POST['cor'] ?? '';
     $genero = $_POST['genero'] ?? '';
     $estampa = $_POST['estampa'] ?? '';
-    $foto = $_FILES['foto'] ?? null;
     
     try {
         if (empty($descricao) || empty($preco) || empty($tamanho) || empty($cor) || empty($genero)) {
@@ -31,39 +39,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             throw new Exception("Preço deve ser um valor numérico positivo!");
         }
         
-        $fotoPath = null;
-        if ($foto && $foto['error'] === UPLOAD_ERR_OK) {
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-            $extension = strtolower(pathinfo($foto['name'], PATHINFO_EXTENSION));
-        
-            if (!in_array($extension, $allowedExtensions)) {
-                throw new Exception("Apenas imagens JPEG, PNG, GIF e WebP são permitidas!");
-            }
-        
-            if ($foto['size'] > 5 * 1024 * 1024) {
-                throw new Exception("A imagem deve ter no máximo 5MB!");
-            }
-
-            $filename = uniqid() . '_' . time() . '.' . $extension;
-            $fotoPath = 'uploads/' . $filename;
-            $fullPath = '../' . $fotoPath;
-            
-            if (!move_uploaded_file($foto['tmp_name'], $fullPath)) {
-                throw new Exception("Erro ao fazer upload da imagem!");
-            }
-        } else if ($foto && $foto['error'] !== UPLOAD_ERR_NO_FILE) {
-            throw new Exception("Erro no upload da imagem: " . $foto['error']);
-        }
-        
-        $stmt = $pdo->prepare("INSERT INTO php_bd.produtos (id_usuario, descricao, preco, tamanho, cor, genero, estampa, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$_SESSION['user_id'], $descricao, $preco, $tamanho, $cor, $genero, $estampa, $fotoPath]);
-        $success = "Produto cadastrado com sucesso!";      
-        $_POST = array();
+        $stmt = $pdo->prepare("UPDATE php_bd.produtos SET descricao = ?, preco = ?, tamanho = ?, cor = ?, genero = ?, estampa = ? WHERE id_camiseta = ?");
+        $stmt->execute([$descricao, $preco, $tamanho, $cor, $genero, $estampa, $produto_id]);
+        $success = "Produto atualizado com sucesso!";
+        $produto['descricao'] = $descricao;
+        $produto['preco'] = $preco;
+        $produto['tamanho'] = $tamanho;
+        $produto['cor'] = $cor;
+        $produto['genero'] = $genero;
+        $produto['estampa'] = $estampa;
         
     } catch (Exception $e) {
-        if (isset($fullPath) && file_exists($fullPath)) {
-            unlink($fullPath);
-        }
         $error = $e->getMessage();
     }
 }
@@ -72,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html class="h-full">
 <head>
-    <title>Divulgar Produto</title>
+    <title>Editar Produto</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -98,25 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
         }
-
-        function previewImage(event) {
-            const input = event.target;
-            const preview = document.getElementById('imagePreview');
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    previewContainer.classList.remove('hidden');
-                }
-                
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                previewContainer.classList.add('hidden');
-            }
-        }
     </script>
 </head>
 <body class="h-full bg-light-primary dark:bg-dark-primary transition-colors duration-300">
@@ -131,11 +98,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 mb-6 border border-light-border dark:border-dark-border transition-all">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">📢 Divulgar Produto</h1>
-                    <p class="text-light-text/70 dark:text-dark-text/70 mt-1">Anuncie sua camiseta para a comunidade</p>
+                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">✏️ Editar Produto</h1>
+                    <p class="text-light-text/70 dark:text-dark-text/70 mt-1">Atualize as informações do seu produto</p>
                 </div>
                 <div class="space-x-3">
-                    <a href="dashboard.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
+                    <a href="meus_produtos.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
                         Voltar
                     </a>
                 </div>
@@ -153,43 +120,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="text-green-700 dark:text-green-300">✅ <?php echo $success; ?></div>
             </div>
         <?php endif; ?>
-        <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-8 border border-light-border dark:border-dark-border transition-all">
-            <form method="post" enctype="multipart/form-data" class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Foto do Produto (Opcional)</label>
-                    <div class="flex items-center justify-center w-full">
-                        <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-light-border dark:border-dark-border rounded-xl cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
-                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                <svg class="w-8 h-8 mb-4 text-light-text/50 dark:text-dark-text/50" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                                </svg>
-                                <p class="mb-2 text-sm text-light-text/50 dark:text-dark-text/50"><span class="font-semibold">Clique para upload</span></p>
-                                <p class="text-xs text-light-text/50 dark:text-dark-text/50">PNG, JPG, GIF ou WEBP (MAX. 5MB)</p>
-                            </div>
-                            <input id="foto" name="foto" type="file" class="hidden" accept="image/*" onchange="previewImage(event)" />
-                        </label>
-                    </div>
-                    
-                    <div id="imagePreviewContainer" class="hidden mt-4">
-                        <p class="text-sm font-medium text-light-text dark:text-dark-text mb-2">Pré-visualização:</p>
-                        <div class="flex justify-center">
-                            <img id="imagePreview" class="max-w-xs max-h-48 rounded-lg shadow-md" src="" alt="Preview da imagem">
-                        </div>
-                    </div>
-                </div>
 
+        <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-8 border border-light-border dark:border-dark-border transition-all">
+            <form method="post" class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Descrição do Produto *</label>
                     <textarea name="descricao" required rows="3"
                         class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border rounded-xl focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent focus:border-transparent transition text-light-text dark:text-dark-text placeholder-gray-500 dark:placeholder-gray-400"
-                        placeholder="Descreva sua camiseta (cor, estilo, condição, etc.)"><?php echo $_POST['descricao'] ?? ''; ?></textarea>
+                        placeholder="Descreva sua camiseta (cor, estilo, condição, etc.)"><?php echo htmlspecialchars($produto['descricao']); ?></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Preço (R$) *</label>
                         <input type="number" name="preco" step="0.01" min="0" required
-                            value="<?php echo $_POST['preco'] ?? ''; ?>"
+                            value="<?php echo $produto['preco']; ?>"
                             class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border rounded-xl focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent focus:border-transparent transition text-light-text dark:text-dark-text placeholder-gray-500 dark:placeholder-gray-400"
                             placeholder="Ex: 29.90">
                     </div>
@@ -199,12 +144,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <select name="tamanho" required
                             class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border rounded-xl focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent focus:border-transparent transition text-light-text dark:text-dark-text">
                             <option value="">Selecione o tamanho</option>
-                            <option value="PP" <?php echo ($_POST['tamanho'] ?? '') == 'PP' ? 'selected' : ''; ?>>PP</option>
-                            <option value="P" <?php echo ($_POST['tamanho'] ?? '') == 'P' ? 'selected' : ''; ?>>P</option>
-                            <option value="M" <?php echo ($_POST['tamanho'] ?? '') == 'M' ? 'selected' : ''; ?>>M</option>
-                            <option value="G" <?php echo ($_POST['tamanho'] ?? '') == 'G' ? 'selected' : ''; ?>>G</option>
-                            <option value="GG" <?php echo ($_POST['tamanho'] ?? '') == 'GG' ? 'selected' : ''; ?>>GG</option>
-                            <option value="XG" <?php echo ($_POST['tamanho'] ?? '') == 'XG' ? 'selected' : ''; ?>>XG</option>
+                            <option value="PP" <?php echo $produto['tamanho'] == 'PP' ? 'selected' : ''; ?>>PP</option>
+                            <option value="P" <?php echo $produto['tamanho'] == 'P' ? 'selected' : ''; ?>>P</option>
+                            <option value="M" <?php echo $produto['tamanho'] == 'M' ? 'selected' : ''; ?>>M</option>
+                            <option value="G" <?php echo $produto['tamanho'] == 'G' ? 'selected' : ''; ?>>G</option>
+                            <option value="GG" <?php echo $produto['tamanho'] == 'GG' ? 'selected' : ''; ?>>GG</option>
+                            <option value="XG" <?php echo $produto['tamanho'] == 'XG' ? 'selected' : ''; ?>>XG</option>
                         </select>
                     </div>
                 </div>
@@ -213,7 +158,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div>
                         <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Cor *</label>
                         <input type="text" name="cor" required
-                            value="<?php echo $_POST['cor'] ?? ''; ?>"
+                            value="<?php echo htmlspecialchars($produto['cor']); ?>"
                             class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border rounded-xl focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent focus:border-transparent transition text-light-text dark:text-dark-text placeholder-gray-500 dark:placeholder-gray-400"
                             placeholder="Ex: Azul, Vermelha, Preta">
                     </div>
@@ -223,9 +168,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <select name="genero" required
                             class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border rounded-xl focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent focus:border-transparent transition text-light-text dark:text-dark-text">
                             <option value="">Selecione o gênero</option>
-                            <option value="Masculino" <?php echo ($_POST['genero'] ?? '') == 'Masculino' ? 'selected' : ''; ?>>Masculino</option>
-                            <option value="Feminino" <?php echo ($_POST['genero'] ?? '') == 'Feminino' ? 'selected' : ''; ?>>Feminino</option>
-                            <option value="Unissex" <?php echo ($_POST['genero'] ?? '') == 'Unissex' ? 'selected' : ''; ?>>Unissex</option>
+                            <option value="Masculino" <?php echo $produto['genero'] == 'Masculino' ? 'selected' : ''; ?>>Masculino</option>
+                            <option value="Feminino" <?php echo $produto['genero'] == 'Feminino' ? 'selected' : ''; ?>>Feminino</option>
+                            <option value="Unissex" <?php echo $produto['genero'] == 'Unissex' ? 'selected' : ''; ?>>Unissex</option>
                         </select>
                     </div>
                 </div>
@@ -233,14 +178,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div>
                     <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Tipo de Estampa (Opcional)</label>
                     <input type="text" name="estampa"
-                        value="<?php echo $_POST['estampa'] ?? ''; ?>"
+                        value="<?php echo htmlspecialchars($produto['estampa']); ?>"
                         class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border rounded-xl focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent focus:border-transparent transition text-light-text dark:text-dark-text placeholder-gray-500 dark:placeholder-gray-400"
                         placeholder="Ex: Lisa, Estampada, Personalizada, etc.">
                 </div>
 
                 <button type="submit" 
                         class="w-full bg-light-accent dark:bg-dark-accent text-white py-4 rounded-xl font-semibold hover:opacity-90 transform hover:-translate-y-0.5 transition-all duration-300 shadow-lg">
-                    Publicar Produto
+                    Atualizar Produto
                 </button>
             </form>
         </div>

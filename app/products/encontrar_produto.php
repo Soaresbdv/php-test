@@ -1,8 +1,5 @@
 <?php
-require_once '../includes/auth.php';
-require_once '../includes/functions.php';
-require_once '../includes/env.php';
-
+require_once '../../includes/bootstrap.php';
 redirectIfNotLogged();
 
 $pdo = getDB();
@@ -59,11 +56,11 @@ $produtos = $stmt->fetchAll();
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 mb-6 border border-light-border dark:border-dark-border transition-all">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">🔍 Encontrar Produtos</h1>
+                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">Encontrar Produtos</h1>
                     <p class="text-light-text/70 dark:text-dark-text/70 mt-1">Descubra camisetas incríveis na comunidade</p>
                 </div>
                 <div class="space-x-3">
-                    <a href="dashboard.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
+                    <a href="../dashboard/dashboard.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
                         Voltar
                     </a>
                 </div>

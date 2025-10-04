@@ -1,7 +1,5 @@
 <?php
-require_once '../includes/auth.php';
-require_once '../includes/functions.php';
-require_once '../includes/env.php';
+require_once '../../includes/bootstrap.php';
 if (!isAdmin()) {
     header("Location: dashboard.php");
     exit;
@@ -135,7 +133,7 @@ if (isset($_GET['editar'])) {
                     <p class="text-light-text/70 dark:text-dark-text/70 mt-1">Painel administrativo - CRUD completo</p>
                 </div>
                 <div class="space-x-3">
-                    <a href="dashboard.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
+                    <a href="../dashboard/dashboard.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
                         Voltar
                     </a>
                     <a href="logout.php" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition text-sm">
