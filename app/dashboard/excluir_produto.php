@@ -9,8 +9,6 @@ if (!isset($_GET['id'])) {
 
 $pdo = getDB();
 $produto_id = $_GET['id'];
-
-// Verificar se o produto pertence ao usuário logado
 $stmt = $pdo->prepare("SELECT id_usuario FROM php_bd.produtos WHERE id_camiseta = ?");
 $stmt->execute([$produto_id]);
 $produto = $stmt->fetch();

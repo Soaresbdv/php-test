@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 mb-6 border border-light-border dark:border-dark-border transition-all">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">✏️ Editar Produto</h1>
+                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">Editar Produto</h1>
                     <p class="text-light-text/70 dark:text-dark-text/70 mt-1">Atualize as informações do seu produto</p>
                 </div>
                 <div class="space-x-3">
