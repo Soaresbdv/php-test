@@ -71,12 +71,17 @@ $user = $stmt->fetch();
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
                     Meus Produtos
                 </a>
-                
+
+                <a href="../products/minhas_conversas.php" 
+                   class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
+                    Minhas Conversas
+                </a>
+
                 <a href="editar_perfil.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
                     Editar Perfil
                 </a>
-                
+
                 <a href="configuracoes.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
                     Configurações
@@ -102,18 +107,24 @@ $user = $stmt->fetch();
     <div class="flex h-screen">
         <a href="divulgar_produto.php" 
            class="flex-1 flex flex-col items-center justify-center bg-light-secondary dark:bg-dark-secondary border-r border-light-border dark:border-dark-border hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 group transition-all duration-300 cursor-pointer">
-            <div class="text-3xl mb-4 group-hover:scale-105 transition-transform">📢</div>
-            <h2 class="text-xl font-semibold text-light-text dark:text-dark-text group-hover:text-light-accent dark:group-hover:text-dark-accent transition-colors">
+            <div class="text-6xl mb-6 group-hover:scale-110 transition-transform">📢</div>
+            <h2 class="text-2xl font-semibold text-light-text dark:text-dark-text group-hover:text-light-accent dark:group-hover:text-dark-accent transition-colors text-center px-4">
                 Divulgar um Produto
             </h2>
+            <p class="text-light-text/70 dark:text-dark-text/70 mt-2 text-center px-4">
+                Anuncie seus produtos para a comunidade
+            </p>
         </a>
 
         <a href="../products/encontrar_produto.php" 
            class="flex-1 flex flex-col items-center justify-center bg-light-secondary dark:bg-dark-secondary border-l border-light-border dark:border-dark-border hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 group transition-all duration-300 cursor-pointer">
-            <div class="text-3xl mb-4 group-hover:scale-105 transition-transform">🔍</div>
-            <h2 class="text-xl font-semibold text-light-text dark:text-dark-text group-hover:text-light-accent dark:group-hover:text-dark-accent transition-colors">
+            <div class="text-6xl mb-6 group-hover:scale-110 transition-transform">🔍</div>
+            <h2 class="text-2xl font-semibold text-light-text dark:text-dark-text group-hover:text-light-accent dark:group-hover:text-dark-accent transition-colors text-center px-4">
                 Encontrar um Produto
             </h2>
+            <p class="text-light-text/70 dark:text-dark-text/70 mt-2 text-center px-4">
+                Descubra camisetas incríveis
+            </p>
         </a>
     </div>
 

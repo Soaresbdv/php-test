@@ -137,9 +137,10 @@ $produtos = $stmt->fetchAll();
                     </div>
 
                     <div class="mt-4">
-                        <button class="w-full bg-light-accent dark:bg-dark-accent text-white py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
+                        <a href="iniciar_chat.php?id_produto=<?php echo $produto['id_camiseta']; ?>&id_vendedor=<?php echo $produto['id_usuario']; ?>" 
+                           class="block w-full bg-light-accent dark:bg-dark-accent text-white py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm text-center">
                             Entrar em Contato
-                        </button>
+                        </a>
                     </div>
                 </div>
                 <?php endforeach; ?>
