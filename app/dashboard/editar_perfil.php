@@ -60,11 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         $_SESSION['success'] = "Perfil atualizado com sucesso!";
-        header('Location: dashboard.php');
+        header('Location: editar_perfil.php');
         exit;
 
     } catch (PDOException $e) {
         $_SESSION['error'] = "Erro ao atualizar perfil: " . $e->getMessage();
+        header('Location: editar_perfil.php');
+        exit;
     }
 }
 ?>
@@ -174,16 +176,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
         </div>
-
+        
         <?php if (isset($_SESSION['error'])): ?>
             <div class="bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 p-4 mb-6 rounded">
-                <div class="text-red-700 dark:text-red-300">❌ <?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
+                <div class="text-red-700 dark:text-red-300">❌ <?php 
+                    echo $_SESSION['error']; 
+                    unset($_SESSION['error']);
+                ?></div>
             </div>
         <?php endif; ?>
-
+        
         <?php if (isset($_SESSION['success'])): ?>
             <div class="bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 p-4 mb-6 rounded">
-                <div class="text-green-700 dark:text-green-300">✅ <?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
+                <div class="text-green-700 dark:text-green-300">✅ <?php 
+                    echo $_SESSION['success']; 
+                    unset($_SESSION['success']);
+                ?></div>
             </div>
         <?php endif; ?>
 
@@ -215,148 +223,136 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                     <p class="text-xs text-light-text/50 dark:text-dark-text/50 mt-1">PNG, JPG até 2MB</p>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="username" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                Nome de Usuário
+                            </label>
+                            <input type="text" id="username" value="<?= htmlspecialchars($user['username']) ?>" readonly
+                                   class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
+                                          rounded-xl text-light-text dark:text-dark-text opacity-70 cursor-not-allowed">
+                            <p class="text-xs text-light-text/70 dark:text-dark-text/70 mt-1">
+                                Nome de usuário não pode ser alterado
+                            </p>
+                        </div>
+
+                        <div>
+                            <label for="cpf" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                CPF
+                            </label>
+                            <input type="text" id="cpf" value="<?= htmlspecialchars($user['cpf']) ?>" readonly
+                                   class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
+                                          rounded-xl text-light-text dark:text-dark-text opacity-70 cursor-not-allowed">
+                            <p class="text-xs text-light-text/70 dark:text-dark-text/70 mt-1">
+                                CPF não pode ser alterado
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                E-mail
+                            </label>
+                            <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required
+                                   class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
+                                          rounded-xl text-light-text dark:text-dark-text focus:outline-none 
+                                          focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
+                        </div>
+
+                        <div>
+                            <label for="telefone" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                Telefone
+                            </label>
+                            <input type="tel" id="telefone" name="telefone" value="<?= htmlspecialchars($user['telefone'] ?? '') ?>"
+                                   class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
+                                          rounded-xl text-light-text dark:text-dark-text focus:outline-none 
+                                          focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
+                        </div>
+                    </div>
+                    <div class="border-t border-light-border dark:border-dark-border mt-8 pt-6">
+                        <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-6">Endereço</h3>
+                                            
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                            <div class="md:col-span-1">
+                                <label for="cep" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                    CEP *
+                                </label>
+                                <input type="text" id="cep" name="cep" value="<?= htmlspecialchars($user['cep'] ?? '') ?>" maxlength="9"
+                                       class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
+                                              rounded-xl text-light-text dark:text-dark-text focus:outline-none 
+                                              focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent transition-colors"
+                                       placeholder="00000-000">
+                                <p class="text-xs text-light-text/60 dark:text-dark-text/60 mt-1">
+                                    Digite o CEP para buscar automaticamente
+                                </p>
+                            </div>
+                                            
+                            <div class="md:col-span-2">
+                                <label for="endereco" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                    Endereço *
+                                </label>
+                                <input type="text" id="endereco" name="endereco" value="<?= htmlspecialchars($user['endereco'] ?? '') ?>" readonly
+                                       class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-light-border dark:border-dark-border 
+                                              rounded-xl text-light-text dark:text-dark-text opacity-80 cursor-not-allowed">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                            <div>
+                                <label for="numero" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                    Número *
+                                </label>
+                                <input type="text" id="numero" name="numero" value="<?= htmlspecialchars($user['numero'] ?? '') ?>"
+                                       class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
+                                              rounded-xl text-light-text dark:text-dark-text focus:outline-none 
+                                              focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent transition-colors"
+                                       placeholder="Ex: 123">
+                            </div>
+                                            
+                            <div>
+                                <label for="complemento" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                    Complemento
+                                </label>
+                                <input type="text" id="complemento" name="complemento" value="<?= htmlspecialchars($user['complemento'] ?? '') ?>"
+                                       class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
+                                              rounded-xl text-light-text dark:text-dark-text focus:outline-none 
+                                              focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent transition-colors"
+                                       placeholder="Ex: Apt 101, Bloco A">
+                            </div>
+                                            
+                            <div>
+                                <label for="bairro" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                    Bairro *
+                                </label>
+                                <input type="text" id="bairro" name="bairro" value="<?= htmlspecialchars($user['bairro'] ?? '') ?>" readonly
+                                       class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-light-border dark:border-dark-border 
+                                              rounded-xl text-light-text dark:text-dark-text opacity-80 cursor-not-allowed">
+                            </div>
+                        </div>                       
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-        <label for="username" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-            Nome de Usuário
-        </label>
-        <input type="text" id="username" value="<?= htmlspecialchars($user['username']) ?>" readonly
-               class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                      rounded-xl text-light-text dark:text-dark-text opacity-70 cursor-not-allowed">
-        <p class="text-xs text-light-text/70 dark:text-dark-text/70 mt-1">
-            Nome de usuário não pode ser alterado
-        </p>
-    </div>
-
-    <div>
-        <label for="cpf" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-            CPF
-        </label>
-        <input type="text" id="cpf" value="<?= htmlspecialchars($user['cpf']) ?>" readonly
-               class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                      rounded-xl text-light-text dark:text-dark-text opacity-70 cursor-not-allowed">
-        <p class="text-xs text-light-text/70 dark:text-dark-text/70 mt-1">
-            CPF não pode ser alterado
-        </p>
-    </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-    <div>
-        <label for="email" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-            E-mail
-        </label>
-        <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required
-               class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                      rounded-xl text-light-text dark:text-dark-text focus:outline-none 
-                      focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
-    </div>
-
-    <div>
-        <label for="telefone" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-            Telefone
-        </label>
-        <input type="tel" id="telefone" name="telefone" value="<?= htmlspecialchars($user['telefone'] ?? '') ?>"
-               class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                      rounded-xl text-light-text dark:text-dark-text focus:outline-none 
-                      focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
-    </div>
-                        </div>
-
-                        <!-- Endereço -->
-                        <div class="border-t border-light-border dark:border-dark-border mt-8 pt-6">
-                            <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-4">Endereço</h3>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="cep" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">CEP</label>
-                                    <input type="text" id="cep" name="cep" value="<?= htmlspecialchars($user['cep'] ?? '') ?>" maxlength="9"
-                                           class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                                                  rounded-xl text-light-text dark:text-dark-text focus:outline-none 
-                                                  focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
-                                </div>
-
-                                <div>
-                                    <label for="endereco" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Endereço</label>
-                                    <input type="text" id="endereco" name="endereco" value="<?= htmlspecialchars($user['endereco'] ?? '') ?>"
-                                           class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                                                  rounded-xl text-light-text dark:text-dark-text focus:outline-none 
-                                                  focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
-                                </div>
+                            <div>
+                                <label for="cidade" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                    Cidade *
+                                </label>
+                                <input type="text" id="cidade" name="cidade" value="<?= htmlspecialchars($user['cidade'] ?? '') ?>" readonly
+                                       class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-light-border dark:border-dark-border 
+                                              rounded-xl text-light-text dark:text-dark-text opacity-80 cursor-not-allowed">
                             </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-                                <div>
-                                    <label for="numero" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Número</label>
-                                    <input type="text" id="numero" name="numero" value="<?= htmlspecialchars($user['numero'] ?? '') ?>"
-                                           class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                                                  rounded-xl text-light-text dark:text-dark-text focus:outline-none 
-                                                  focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
-                                </div>
-
-                                <div>
-                                    <label for="complemento" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Complemento</label>
-                                    <input type="text" id="complemento" name="complemento" value="<?= htmlspecialchars($user['complemento'] ?? '') ?>"
-                                           class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                                                  rounded-xl text-light-text dark:text-dark-text focus:outline-none 
-                                                  focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
-                                </div>
-
-                                <div>
-                                    <label for="bairro" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Bairro</label>
-                                    <input type="text" id="bairro" name="bairro" value="<?= htmlspecialchars($user['bairro'] ?? '') ?>"
-                                           class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                                                  rounded-xl text-light-text dark:text-dark-text focus:outline-none 
-                                                  focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
-                                </div>
+                                            
+                            <div>
+                                <label for="estado" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                                    Estado *
+                                </label>
+                                <input type="text" id="estado" name="estado" value="<?= htmlspecialchars($user['estado'] ?? '') ?>" readonly
+                                       class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-light-border dark:border-dark-border 
+                                              rounded-xl text-light-text dark:text-dark-text opacity-80 cursor-not-allowed">
                             </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                                <div>
-                                    <label for="cidade" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Cidade</label>
-                                    <input type="text" id="cidade" name="cidade" value="<?= htmlspecialchars($user['cidade'] ?? '') ?>"
-                                           class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                                                  rounded-xl text-light-text dark:text-dark-text focus:outline-none 
-                                                  focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
-                                </div>
-
-                                <div>
-                                    <label for="estado" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">Estado</label>
-                                    <select id="estado" name="estado"
-                                            class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
-                                                   rounded-xl text-light-text dark:text-dark-text focus:outline-none 
-                                                   focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
-                                        <option value="">Selecione</option>
-                                        <option value="AC" <?= ($user['estado'] ?? '') == 'AC' ? 'selected' : '' ?>>Acre</option>
-                                        <option value="AL" <?= ($user['estado'] ?? '') == 'AL' ? 'selected' : '' ?>>Alagoas</option>
-                                        <option value="AP" <?= ($user['estado'] ?? '') == 'AP' ? 'selected' : '' ?>>Amapá</option>
-                                        <option value="AM" <?= ($user['estado'] ?? '') == 'AM' ? 'selected' : '' ?>>Amazonas</option>
-                                        <option value="BA" <?= ($user['estado'] ?? '') == 'BA' ? 'selected' : '' ?>>Bahia</option>
-                                        <option value="CE" <?= ($user['estado'] ?? '') == 'CE' ? 'selected' : '' ?>>Ceará</option>
-                                        <option value="DF" <?= ($user['estado'] ?? '') == 'DF' ? 'selected' : '' ?>>Distrito Federal</option>
-                                        <option value="ES" <?= ($user['estado'] ?? '') == 'ES' ? 'selected' : '' ?>>Espírito Santo</option>
-                                        <option value="GO" <?= ($user['estado'] ?? '') == 'GO' ? 'selected' : '' ?>>Goiás</option>
-                                        <option value="MA" <?= ($user['estado'] ?? '') == 'MA' ? 'selected' : '' ?>>Maranhão</option>
-                                        <option value="MT" <?= ($user['estado'] ?? '') == 'MT' ? 'selected' : '' ?>>Mato Grosso</option>
-                                        <option value="MS" <?= ($user['estado'] ?? '') == 'MS' ? 'selected' : '' ?>>Mato Grosso do Sul</option>
-                                        <option value="MG" <?= ($user['estado'] ?? '') == 'MG' ? 'selected' : '' ?>>Minas Gerais</option>
-                                        <option value="PA" <?= ($user['estado'] ?? '') == 'PA' ? 'selected' : '' ?>>Pará</option>
-                                        <option value="PB" <?= ($user['estado'] ?? '') == 'PB' ? 'selected' : '' ?>>Paraíba</option>
-                                        <option value="PR" <?= ($user['estado'] ?? '') == 'PR' ? 'selected' : '' ?>>Paraná</option>
-                                        <option value="PE" <?= ($user['estado'] ?? '') == 'PE' ? 'selected' : '' ?>>Pernambuco</option>
-                                        <option value="PI" <?= ($user['estado'] ?? '') == 'PI' ? 'selected' : '' ?>>Piauí</option>
-                                        <option value="RJ" <?= ($user['estado'] ?? '') == 'RJ' ? 'selected' : '' ?>>Rio de Janeiro</option>
-                                        <option value="RN" <?= ($user['estado'] ?? '') == 'RN' ? 'selected' : '' ?>>Rio Grande do Norte</option>
-                                        <option value="RS" <?= ($user['estado'] ?? '') == 'RS' ? 'selected' : '' ?>>Rio Grande do Sul</option>
-                                        <option value="RO" <?= ($user['estado'] ?? '') == 'RO' ? 'selected' : '' ?>>Rondônia</option>
-                                        <option value="RR" <?= ($user['estado'] ?? '') == 'RR' ? 'selected' : '' ?>>Roraima</option>
-                                        <option value="SC" <?= ($user['estado'] ?? '') == 'SC' ? 'selected' : '' ?>>Santa Catarina</option>
-                                        <option value="SP" <?= ($user['estado'] ?? '') == 'SP' ? 'selected' : '' ?>>São Paulo</option>
-                                        <option value="SE" <?= ($user['estado'] ?? '') == 'SE' ? 'selected' : '' ?>>Sergipe</option>
-                                        <option value="TO" <?= ($user['estado'] ?? '') == 'TO' ? 'selected' : '' ?>>Tocantins</option>
-                                    </select>
-                                </div>
-                            </div>
+                        </div>                                    
+                        <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                            <p class="text-xs text-blue-700 dark:text-blue-300 flex items-center">
+                                <span class="mr-2"></span>
+                                Campos marcados com * são obrigatórios. Endereço, Bairro, Cidade e Estado são preenchidos automaticamente pelo CEP.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -372,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script>
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
-        
+                            
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             html.classList.add('dark');
         } else {
@@ -384,12 +380,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
         });
 
+        let buscandoCEP = false;
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (buscandoCEP) {
+                e.preventDefault();
+                alert('Aguarde a busca do CEP terminar antes de salvar.');
+                return;
+            }
+
+            const cep = document.getElementById('cep').value.replace(/\D/g, '');
+            if (cep && cep.length !== 8) {
+                e.preventDefault();
+                alert('Por favor, digite um CEP válido com 8 dígitos.');
+                document.getElementById('cep').focus();
+            }
+        });
+
         document.getElementById('cep').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
+
             if (value.length > 5) {
                 value = value.substring(0, 5) + '-' + value.substring(5, 8);
             }
             e.target.value = value;
+
+            const cepDigits = value.replace(/\D/g, '');
+            if (cepDigits.length === 8 && !buscandoCEP) {
+                setTimeout(() => {
+                    buscarEnderecoPorCEP();
+                }, 500);
+            }
+        });
+
+        document.getElementById('cep').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+
+                const cep = this.value.replace(/\D/g, '');
+                if (cep.length === 8 && !buscandoCEP) {
+                    buscarEnderecoPorCEP();
+                }
+            }
+        });
+
+        document.getElementById('cep').addEventListener('blur', function() {
+            const cep = this.value.replace(/\D/g, '');
+            if (cep.length === 8 && !buscandoCEP) {
+                buscarEnderecoPorCEP();
+            }
         });
 
         document.getElementById('telefone').addEventListener('input', function(e) {
@@ -403,113 +442,223 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             e.target.value = value;
         });
 
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('foto_perfil');
-    const profileImage = document.getElementById('profileImage');
-    const placeholder = document.getElementById('placeholder');
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('foto_perfil');
+        const profileImage = document.getElementById('profileImage');
+        const placeholder = document.getElementById('placeholder');
 
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
-    });
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
 
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, highlight, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, unhighlight, false);
-    });
-
-    function highlight() {
-        dropZone.classList.add('border-light-accent', 'dark:border-dark-accent', 'bg-light-accent/10', 'dark:bg-dark-accent/10', 'dragging');
-        dropZone.style.borderStyle = 'solid';
-    }
-    
-    function unhighlight() {
-        dropZone.classList.remove('border-light-accent', 'dark:border-dark-accent', 'bg-light-accent/10', 'dark:bg-dark-accent/10', 'dragging');
-        dropZone.style.borderStyle = 'dashed';
-    }
-    dropZone.addEventListener('drop', handleDrop, false);
-
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        
-        if (files.length > 0) {
-            handleFiles(files[0]);
-        }
-    }
-
-    dropZone.addEventListener('click', () => {
-        fileInput.click();
-    });
-
-    fileInput.addEventListener('change', function() {
-        if (this.files && this.files[0]) {
-            handleFiles(this.files[0]);
-        }
-    });
-
-    function handleFiles(file) {
-        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        if (!validTypes.includes(file.type)) {
-            alert('Por favor, selecione uma imagem válida (JPEG, PNG, GIF ou WebP).');
-            return;
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
 
-        if (file.size > 2 * 1024 * 1024) {
-            alert('A imagem deve ter no máximo 2MB.');
-            return;
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropZone.classList.add('border-light-accent', 'dark:border-dark-accent', 'bg-light-accent/10', 'dark:bg-dark-accent/10', 'dragging');
+            dropZone.style.borderStyle = 'solid';
         }
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            if (profileImage) {
-                profileImage.src = e.target.result;
-                profileImage.classList.remove('hidden');
-                
-                if (placeholder) {
-                    placeholder.classList.add('hidden');
-                }
-                
-                const existingOverlay = dropZone.querySelector('.drop-overlay');
-                if (existingOverlay) {
-                    existingOverlay.remove();
-                }
-                
-                const overlay = document.createElement('div');
-                overlay.className = 'absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100';
-                overlay.innerHTML = '<span class="text-white text-sm font-semibold">Alterar</span>';
-                dropZone.appendChild(overlay);
+        function unhighlight() {
+            dropZone.classList.remove('border-light-accent', 'dark:border-dark-accent', 'bg-light-accent/10', 'dark:bg-dark-accent/10', 'dragging');
+            dropZone.style.borderStyle = 'dashed';
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                handleFiles(files[0]);
             }
-        };
-        reader.readAsDataURL(file);
-    }
+        }
 
-    document.getElementById('cep').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 5) {
-            value = value.substring(0, 5) + '-' + value.substring(5, 8);
-        }
-        e.target.value = value;
-    });
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-    document.getElementById('telefone').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 2) {
-            value = '(' + value.substring(0, 2) + ') ' + value.substring(2);
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                handleFiles(this.files[0]);
+            }
+        });
+
+        function handleFiles(file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Por favor, selecione uma imagem válida (JPEG, PNG, GIF ou WebP).');
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('A imagem deve ter no máximo 2MB.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (profileImage) {
+                    profileImage.src = e.target.result;
+                    profileImage.classList.remove('hidden');
+
+                    if (placeholder) {
+                        placeholder.classList.add('hidden');
+                    }
+
+                    const existingOverlay = dropZone.querySelector('.drop-overlay');
+                    if (existingOverlay) {
+                        existingOverlay.remove();
+                    }
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100';
+                    overlay.innerHTML = '<span class="text-white text-sm font-semibold">Alterar</span>';
+                    dropZone.appendChild(overlay);
+                }
+            };
+            reader.readAsDataURL(file);
         }
-        if (value.length > 10) {
-            value = value.substring(0, 10) + '-' + value.substring(10, 14);
+
+        async function buscarEnderecoPorCEP() {
+            const cepInput = document.getElementById('cep');
+            const cep = cepInput.value.replace(/\D/g, '');
+
+            if (cep.length !== 8) {
+                alert('Por favor, digite um CEP válido com 8 dígitos.');
+                cepInput.focus();
+                return;
+            }
+
+            if (buscandoCEP) return;
+
+            buscandoCEP = true;
+            mostrarLoadingEndereco(true);
+
+            try {
+                const response = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`);
+
+                if (!response.ok) {
+                    throw new Error('CEP não encontrado');
+                }
+
+                const data = await response.json();
+
+                if (data && !data.errors) {
+                    document.getElementById('endereco').value = data.street || '';
+                    document.getElementById('bairro').value = data.neighborhood || '';
+                    document.getElementById('cidade').value = data.city || '';
+                    document.getElementById('estado').value = data.state || '';
+                    document.getElementById('numero').focus();
+
+                    cepInput.classList.remove('border-red-500');
+                    cepInput.classList.add('border-green-500');
+
+                    setTimeout(() => {
+                        cepInput.classList.remove('border-green-500');
+                    }, 2000);
+
+                } else {
+                    throw new Error('CEP não encontrado');
+                }
+
+            } catch (error) {
+                console.error('Erro ao buscar CEP:', error);
+                alert('CEP não encontrado. Verifique o número digitado.');
+                cepInput.classList.add('border-red-500');
+                limparCamposEndereco();
+            } finally {
+                buscandoCEP = false;
+                mostrarLoadingEndereco(false);
+            }
         }
-        e.target.value = value;
-    });
-</script>
+
+        function mostrarLoadingEndereco(mostrar) {
+            const campos = ['endereco', 'bairro', 'cidade', 'estado'];
+
+            if (mostrar) {
+                const cepInput = document.getElementById('cep');
+                cepInput.placeholder = 'Buscando...';
+                cepInput.classList.add('opacity-50');
+                cepInput.readOnly = true;
+
+                campos.forEach(campo => {
+                    const element = document.getElementById(campo);
+                    if (element) {
+                        element.value = 'Buscando...';
+                        element.classList.add('opacity-50');
+                    }
+                });
+            } else {
+                const cepInput = document.getElementById('cep');
+                cepInput.placeholder = '00000-000';
+                cepInput.classList.remove('opacity-50');
+                cepInput.readOnly = false;
+
+                campos.forEach(campo => {
+                    const element = document.getElementById(campo);
+                    if (element) {
+                        element.classList.remove('opacity-50');
+                        if (element.value === 'Buscando...') {
+                            element.value = '';
+                        }
+                    }
+                });
+            }
+        }
+
+        function limparCamposEndereco() {
+            document.getElementById('endereco').value = '';
+            document.getElementById('bairro').value = '';
+            document.getElementById('cidade').value = '';
+            document.getElementById('estado').value = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const successMessage = document.querySelector('.bg-green-100');
+            if (successMessage) {
+                setTimeout(() => {
+                    successMessage.style.transition = 'all 0.5s ease';
+                    successMessage.style.opacity = '0';
+                    successMessage.style.transform = 'translateY(-10px)';
+                    successMessage.style.marginBottom = '0';
+
+                    setTimeout(() => {
+                        if (successMessage.parentNode) {
+                            successMessage.remove();
+                        }
+                    }, 500);
+                }, 3000);
+            }
+
+            const errorMessage = document.querySelector('.bg-red-100');
+            if (errorMessage) {
+                setTimeout(() => {
+                    errorMessage.style.transition = 'all 0.5s ease';
+                    errorMessage.style.opacity = '0';
+                    errorMessage.style.transform = 'translateY(-10px)';
+                    errorMessage.style.marginBottom = '0';
+
+                    setTimeout(() => {
+                        if (errorMessage.parentNode) {
+                            errorMessage.remove();
+                        }
+                    }, 500);
+                }, 3000);
+            }
+        });
+    </script>
 </body>
 </html>
