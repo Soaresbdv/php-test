@@ -16,7 +16,7 @@ $produtos = $stmt->fetchAll();
 <!DOCTYPE html>
 <html class="h-full">
 <head>
-    <title>Encontrar Produtos</title>
+    <title><?php echo t('find_products'); ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -56,12 +56,12 @@ $produtos = $stmt->fetchAll();
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 mb-6 border border-light-border dark:border-dark-border transition-all">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">Encontrar Produtos</h1>
-                    <p class="text-light-text/70 dark:text-dark-text/70 mt-1">Descubra camisetas incríveis na comunidade</p>
+                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text"><?php echo t('find_products'); ?></h1>
+                    <p class="text-light-text/70 dark:text-dark-text/70 mt-1"><?php echo t('discover_amazing_t_shirts'); ?></p>
                 </div>
                 <div class="space-x-3">
                     <a href="../dashboard/dashboard.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
-                        Voltar
+                        <?php echo t('back'); ?>
                     </a>
                 </div>
             </div>
@@ -70,9 +70,8 @@ $produtos = $stmt->fetchAll();
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php if (empty($produtos)): ?>
                 <div class="col-span-full text-center py-12">
-                    <div class="text-6xl mb-4">😔</div>
-                    <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-2">Nenhum produto encontrado</h3>
-                    <p class="text-light-text/70 dark:text-dark-text/70">Seja o primeiro a divulgar uma camiseta!</p>
+                    <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-2"><?php echo t('no_products_found'); ?></h3>
+                    <p class="text-light-text/70 dark:text-dark-text/70"><?php echo t('be_first_to_advertise'); ?></p>
                 </div>
             <?php else: ?>
                 <?php foreach ($produtos as $produto): ?>
@@ -81,7 +80,7 @@ $produtos = $stmt->fetchAll();
                     <?php if (!empty($produto['foto'])): ?>
                         <div class="mb-4">
                             <img src="../<?php echo htmlspecialchars($produto['foto']); ?>" 
-                                 alt="Foto do produto" 
+                                 alt="<?php echo t('product_photo'); ?>" 
                                  class="w-full h-48 object-cover rounded-xl mb-3">
                         </div>
                     <?php else: ?>
@@ -106,18 +105,18 @@ $produtos = $stmt->fetchAll();
 
                     <div class="space-y-3">
                         <div>
-                            <h3 class="font-semibold text-light-text dark:text-dark-text mb-1">Descrição</h3>
+                            <h3 class="font-semibold text-light-text dark:text-dark-text mb-1"><?php echo t('description'); ?></h3>
                             <p class="text-light-text/80 dark:text-dark-text/80 text-sm"><?php echo htmlspecialchars($produto['descricao']); ?></p>
                         </div>
 
                         <div class="grid grid-cols-2 gap-2 text-sm">
                             <div>
-                                <span class="text-light-text/70 dark:text-dark-text/70">Cor:</span>
+                                <span class="text-light-text/70 dark:text-dark-text/70"><?php echo t('color'); ?>:</span>
                                 <span class="text-light-text dark:text-dark-text font-medium"><?php echo htmlspecialchars($produto['cor']); ?></span>
                             </div>
                             <?php if (!empty($produto['estampa'])): ?>
                             <div>
-                                <span class="text-light-text/70 dark:text-dark-text/70">Estampa:</span>
+                                <span class="text-light-text/70 dark:text-dark-text/70"><?php echo t('print'); ?>:</span>
                                 <span class="text-light-text dark:text-dark-text font-medium"><?php echo htmlspecialchars($produto['estampa']); ?></span>
                             </div>
                             <?php endif; ?>
@@ -126,7 +125,7 @@ $produtos = $stmt->fetchAll();
                         <div class="border-t border-light-border dark:border-dark-border pt-3">
                             <div class="flex justify-between items-center text-sm">
                                 <div>
-                                    <span class="text-light-text/70 dark:text-dark-text/70">Vendedor:</span>
+                                    <span class="text-light-text/70 dark:text-dark-text/70"><?php echo t('seller'); ?>:</span>
                                     <span class="text-light-text dark:text-dark-text font-medium"><?php echo htmlspecialchars($produto['username']); ?></span>
                                 </div>
                                 <span class="text-light-text/50 dark:text-dark-text/50 text-xs">
@@ -139,7 +138,7 @@ $produtos = $stmt->fetchAll();
                     <div class="mt-4">
                         <a href="iniciar_chat.php?id_produto=<?php echo $produto['id_camiseta']; ?>&id_vendedor=<?php echo $produto['id_usuario']; ?>" 
                            class="block w-full bg-light-accent dark:bg-dark-accent text-white py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm text-center">
-                            Entrar em Contato
+                            <?php echo t('contact_seller'); ?>
                         </a>
                     </div>
                 </div>

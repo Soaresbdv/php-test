@@ -12,7 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     try {
         if (attemptRegister($cpf, $username, $password)) {
-            header("Location: login.php?registro=sucesso");
+            $_SESSION['registro_sucesso'] = true;
+            header("Location: login.php");
             exit;
         }
     } catch (Exception $e) {

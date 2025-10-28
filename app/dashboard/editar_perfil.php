@@ -9,7 +9,7 @@ $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
-    $_SESSION['error'] = "Usuário não encontrado.";
+    $_SESSION['error'] = t('user_not_found');
     header('Location: dashboard.php'); 
     exit;
 }
@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cidade = $_POST['cidade'] ?? '';
     $estado = $_POST['estado'] ?? '';
     $foto_perfil = $user['foto_perfil'];
+    
     if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
         $imageStorage = new ImageStorage();
         $uploadResult = $imageStorage->uploadProfileImage($_FILES['foto_perfil'], $user_id);
@@ -59,12 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $numero, $complemento, $bairro, $cidade, $estado, $user_id
         ]);
 
-        $_SESSION['success'] = "Perfil atualizado com sucesso!";
+        $_SESSION['success'] = t('profile_updated');
         header('Location: editar_perfil.php');
         exit;
 
     } catch (PDOException $e) {
-        $_SESSION['error'] = "Erro ao atualizar perfil: " . $e->getMessage();
+        $_SESSION['error'] = t('profile_update_error') . ": " . $e->getMessage();
         header('Location: editar_perfil.php');
         exit;
     }
@@ -74,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html class="h-full">
 <head>
-    <title>Editar Perfil</title>
+    <title><?php echo t('edit_profile'); ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -125,31 +126,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <div id="userMenu" class="hidden absolute left-0 top-12 mt-2 w-48 bg-light-secondary dark:bg-dark-secondary rounded-xl shadow-2xl border border-light-border dark:border-dark-border transition-all duration-300">
             <div class="p-4 border-b border-light-border dark:border-dark-border">
-                <p class="text-sm font-semibold text-light-text dark:text-dark-text">Olá, <?php echo htmlspecialchars($user['username']); ?>!</p>
+                <p class="text-sm font-semibold text-light-text dark:text-dark-text"><?php echo t('hello'); ?>, <?php echo htmlspecialchars($user['username']); ?>!</p>
                 <p class="text-xs text-light-text/70 dark:text-dark-text/70 mt-1"><?php echo htmlspecialchars($user['cpf']); ?></p>
             </div>
             
             <div class="p-2">
                 <a href="meus_produtos.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
-                    Meus Produtos
+                    <?php echo t('my_products'); ?>
                 </a>
                 
                 <a href="editar_perfil.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-accent dark:text-dark-accent bg-light-accent/10 dark:bg-dark-accent/10 rounded-lg transition-colors">
-                    Editar Perfil
+                    <?php echo t('edit_profile'); ?>
                 </a>
                 
                 <a href="configuracoes.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
-                    Configurações
+                    <?php echo t('settings'); ?>
                 </a>
             </div>
             
             <div class="p-2 border-t border-light-border dark:border-dark-border">
                 <a href="../auth/logout.php" 
                    class="flex items-center px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
-                    Sair
+                    <?php echo t('logout'); ?>
                 </a>
             </div>
         </div>
@@ -166,12 +167,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-8 mb-8 border border-light-border dark:border-dark-border transition-all">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-3xl font-bold text-light-text dark:text-dark-text">Editar Perfil</h1>
-                    <p class="text-light-text/70 dark:text-dark-text/70 mt-2">Atualize suas informações pessoais</p>
+                    <h1 class="text-3xl font-bold text-light-text dark:text-dark-text"><?php echo t('edit_profile'); ?></h1>
+                    <p class="text-light-text/70 dark:text-dark-text/70 mt-2"><?php echo t('update_personal_info'); ?></p>
                 </div>
                 <div>
                     <a href="dashboard.php" class="bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-600 transition">
-                        Voltar
+                        <?php echo t('back'); ?>
                     </a>
                 </div>
             </div>
@@ -198,53 +199,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-8 border border-light-border dark:border-dark-border transition-all">
             <form method="POST" enctype="multipart/form-data" class="space-y-6">
                 <div class="text-center">
-                    <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-4">Foto de Perfil</label>
+                    <label class="block text-sm font-medium text-light-text dark:text-dark-text mb-4">
+                        <?php echo t('profile_picture'); ?>
+                    </label>
                         
                     <div id="dropZone" 
                          class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-dashed border-light-border dark:border-dark-border hover:border-light-accent dark:hover:border-dark-accent transition-colors duration-300 cursor-pointer flex items-center justify-center overflow-hidden relative group">
                         
                         <?php if (!empty($user['foto_perfil'])): ?>
                             <img src="/<?= htmlspecialchars($user['foto_perfil']) ?>" 
-                                 alt="Foto de Perfil" 
+                                 alt="<?php echo t('profile_picture'); ?>" 
                                  id="profileImage"
                                  class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                <span class="text-white text-sm font-semibold">Alterar</span>
+                                <span class="text-white text-sm font-semibold"><?php echo t('change'); ?></span>
                             </div>
                         <?php else: ?>
                             <div id="placeholder" class="text-gray-500 dark:text-gray-400 text-4xl group-hover:text-light-accent dark:group-hover:text-dark-accent transition-colors">
                                 👤
                             </div>
-                            <img id="profileImage" src="" alt="Foto de Perfil" class="w-full h-full object-cover hidden">
+                            <img id="profileImage" src="" alt="<?php echo t('profile_picture'); ?>" class="w-full h-full object-cover hidden">
                         <?php endif; ?>
                         
                         <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*" class="hidden">
                     </div>
                         
-                    <p class="text-xs text-light-text/50 dark:text-dark-text/50 mt-1">PNG, JPG até 2MB</p>
+                    <p class="text-xs text-light-text/50 dark:text-dark-text/50 mt-1">
+                        <?php echo t('image_formats'); ?>
+                    </p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="username" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                Nome de Usuário
+                                <?php echo t('username'); ?>
                             </label>
                             <input type="text" id="username" value="<?= htmlspecialchars($user['username']) ?>" readonly
                                    class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
                                           rounded-xl text-light-text dark:text-dark-text opacity-70 cursor-not-allowed">
                             <p class="text-xs text-light-text/70 dark:text-dark-text/70 mt-1">
-                                Nome de usuário não pode ser alterado
+                                <?php echo t('username_cannot_changed'); ?>
                             </p>
                         </div>
 
                         <div>
                             <label for="cpf" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                CPF
+                                <?php echo t('cpf'); ?>
                             </label>
                             <input type="text" id="cpf" value="<?= htmlspecialchars($user['cpf']) ?>" readonly
                                    class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
                                           rounded-xl text-light-text dark:text-dark-text opacity-70 cursor-not-allowed">
                             <p class="text-xs text-light-text/70 dark:text-dark-text/70 mt-1">
-                                CPF não pode ser alterado
+                                <?php echo t('cpf_cannot_changed'); ?>
                             </p>
                         </div>
                     </div>
@@ -252,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                         <div>
                             <label for="email" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                E-mail
+                                <?php echo t('email'); ?>
                             </label>
                             <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required
                                    class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
@@ -262,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div>
                             <label for="telefone" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                Telefone
+                                <?php echo t('phone'); ?>
                             </label>
                             <input type="tel" id="telefone" name="telefone" value="<?= htmlspecialchars($user['telefone'] ?? '') ?>"
                                    class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
@@ -270,69 +275,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                           focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent">
                         </div>
                     </div>
+                    
                     <div class="border-t border-light-border dark:border-dark-border mt-8 pt-6">
-                        <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-6">Endereço</h3>
+                        <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-6">
+                            <?php echo t('address'); ?>
+                        </h3>
                                             
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                             <div class="md:col-span-1">
                                 <label for="cep" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                    CEP *
+                                    <?php echo t('zipcode'); ?> *
                                 </label>
                                 <input type="text" id="cep" name="cep" value="<?= htmlspecialchars($user['cep'] ?? '') ?>" maxlength="9"
                                        class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
                                               rounded-xl text-light-text dark:text-dark-text focus:outline-none 
                                               focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent transition-colors"
-                                       placeholder="00000-000">
+                                       placeholder="<?php echo t('zipcode_placeholder'); ?>">
                                 <p class="text-xs text-light-text/60 dark:text-dark-text/60 mt-1">
-                                    Digite o CEP para buscar automaticamente
+                                    <?php echo t('zipcode_hint'); ?>
                                 </p>
                             </div>
                                             
                             <div class="md:col-span-2">
                                 <label for="endereco" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                    Endereço *
+                                    <?php echo t('street'); ?> *
                                 </label>
                                 <input type="text" id="endereco" name="endereco" value="<?= htmlspecialchars($user['endereco'] ?? '') ?>" readonly
                                        class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-light-border dark:border-dark-border 
                                               rounded-xl text-light-text dark:text-dark-text opacity-80 cursor-not-allowed">
                             </div>
                         </div>
+                        
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                             <div>
                                 <label for="numero" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                    Número *
+                                    <?php echo t('number'); ?> *
                                 </label>
                                 <input type="text" id="numero" name="numero" value="<?= htmlspecialchars($user['numero'] ?? '') ?>"
                                        class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
                                               rounded-xl text-light-text dark:text-dark-text focus:outline-none 
                                               focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent transition-colors"
-                                       placeholder="Ex: 123">
+                                       placeholder="<?php echo t('number_placeholder'); ?>">
                             </div>
                                             
                             <div>
                                 <label for="complemento" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                    Complemento
+                                    <?php echo t('complement'); ?>
                                 </label>
                                 <input type="text" id="complemento" name="complemento" value="<?= htmlspecialchars($user['complemento'] ?? '') ?>"
                                        class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-light-border dark:border-dark-border 
                                               rounded-xl text-light-text dark:text-dark-text focus:outline-none 
                                               focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent transition-colors"
-                                       placeholder="Ex: Apt 101, Bloco A">
+                                       placeholder="<?php echo t('complement_placeholder'); ?>">
                             </div>
                                             
                             <div>
                                 <label for="bairro" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                    Bairro *
+                                    <?php echo t('neighborhood'); ?> *
                                 </label>
                                 <input type="text" id="bairro" name="bairro" value="<?= htmlspecialchars($user['bairro'] ?? '') ?>" readonly
                                        class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-light-border dark:border-dark-border 
                                               rounded-xl text-light-text dark:text-dark-text opacity-80 cursor-not-allowed">
                             </div>
                         </div>                       
+                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="cidade" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                    Cidade *
+                                    <?php echo t('city'); ?> *
                                 </label>
                                 <input type="text" id="cidade" name="cidade" value="<?= htmlspecialchars($user['cidade'] ?? '') ?>" readonly
                                        class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-light-border dark:border-dark-border 
@@ -341,24 +351,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             
                             <div>
                                 <label for="estado" class="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                                    Estado *
+                                    <?php echo t('state'); ?> *
                                 </label>
                                 <input type="text" id="estado" name="estado" value="<?= htmlspecialchars($user['estado'] ?? '') ?>" readonly
                                        class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-light-border dark:border-dark-border 
                                               rounded-xl text-light-text dark:text-dark-text opacity-80 cursor-not-allowed">
                             </div>
                         </div>                                    
+                        
                         <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                             <p class="text-xs text-blue-700 dark:text-blue-300 flex items-center">
                                 <span class="mr-2"></span>
-                                Campos marcados com * são obrigatórios. Endereço, Bairro, Cidade e Estado são preenchidos automaticamente pelo CEP.
+                                <?php echo t('required_fields'); ?>
                             </p>
                         </div>
                     </div>
                 </div>
+                
                 <div class="flex justify-end space-x-4 pt-6">
                     <button type="submit" class="bg-light-accent dark:bg-dark-accent text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition block mx-auto">
-                      Salvar Alterações
+                        <?php echo t('save_changes'); ?>
                     </button>
                 </div>
             </form>
@@ -385,14 +397,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         document.querySelector('form').addEventListener('submit', function(e) {
             if (buscandoCEP) {
                 e.preventDefault();
-                alert('Aguarde a busca do CEP terminar antes de salvar.');
+                alert('<?php echo t('wait_zipcode_search'); ?>');
                 return;
             }
 
             const cep = document.getElementById('cep').value.replace(/\D/g, '');
             if (cep && cep.length !== 8) {
                 e.preventDefault();
-                alert('Por favor, digite um CEP válido com 8 dígitos.');
+                alert('<?php echo t('valid_zipcode_required'); ?>');
                 document.getElementById('cep').focus();
             }
         });
@@ -499,12 +511,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function handleFiles(file) {
             const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             if (!validTypes.includes(file.type)) {
-                alert('Por favor, selecione uma imagem válida (JPEG, PNG, GIF ou WebP).');
+                alert('<?php echo t('valid_image_required'); ?>');
                 return;
             }
 
             if (file.size > 2 * 1024 * 1024) {
-                alert('A imagem deve ter no máximo 2MB.');
+                alert('<?php echo t('image_size_limit'); ?>');
                 return;
             }
 
@@ -525,7 +537,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     const overlay = document.createElement('div');
                     overlay.className = 'absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100';
-                    overlay.innerHTML = '<span class="text-white text-sm font-semibold">Alterar</span>';
+                    overlay.innerHTML = '<span class="text-white text-sm font-semibold"><?php echo t('change'); ?></span>';
                     dropZone.appendChild(overlay);
                 }
             };
@@ -537,7 +549,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const cep = cepInput.value.replace(/\D/g, '');
 
             if (cep.length !== 8) {
-                alert('Por favor, digite um CEP válido com 8 dígitos.');
+                alert('<?php echo t('valid_zipcode_required'); ?>');
                 cepInput.focus();
                 return;
             }
@@ -551,7 +563,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 const response = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`);
 
                 if (!response.ok) {
-                    throw new Error('CEP não encontrado');
+                    throw new Error('<?php echo t('zipcode_not_found'); ?>');
                 }
 
                 const data = await response.json();
@@ -571,12 +583,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }, 2000);
 
                 } else {
-                    throw new Error('CEP não encontrado');
+                    throw new Error('<?php echo t('zipcode_not_found'); ?>');
                 }
 
             } catch (error) {
                 console.error('Erro ao buscar CEP:', error);
-                alert('CEP não encontrado. Verifique o número digitado.');
+                alert('<?php echo t('zipcode_not_found'); ?>');
                 cepInput.classList.add('border-red-500');
                 limparCamposEndereco();
             } finally {
@@ -590,20 +602,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (mostrar) {
                 const cepInput = document.getElementById('cep');
-                cepInput.placeholder = 'Buscando...';
+                cepInput.placeholder = '<?php echo t('searching'); ?>...';
                 cepInput.classList.add('opacity-50');
                 cepInput.readOnly = true;
 
                 campos.forEach(campo => {
                     const element = document.getElementById(campo);
                     if (element) {
-                        element.value = 'Buscando...';
+                        element.value = '<?php echo t('searching'); ?>...';
                         element.classList.add('opacity-50');
                     }
                 });
             } else {
                 const cepInput = document.getElementById('cep');
-                cepInput.placeholder = '00000-000';
+                cepInput.placeholder = '<?php echo t('zipcode_placeholder'); ?>';
                 cepInput.classList.remove('opacity-50');
                 cepInput.readOnly = false;
 
@@ -611,7 +623,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     const element = document.getElementById(campo);
                     if (element) {
                         element.classList.remove('opacity-50');
-                        if (element.value === 'Buscando...') {
+                        if (element.value === '<?php echo t('searching'); ?>...') {
                             element.value = '';
                         }
                     }

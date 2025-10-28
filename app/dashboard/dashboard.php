@@ -12,7 +12,7 @@ $user = $stmt->fetch();
 <!DOCTYPE html>
 <html class="h-full">
 <head>
-    <title>Dashboard</title>
+    <title><?php echo t('dashboard'); ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -54,6 +54,7 @@ $user = $stmt->fetch();
         });
     </script>
 </head>
+
 <body class="h-full bg-light-primary dark:bg-dark-primary transition-colors duration-300">
     <div class="fixed top-4 left-4 z-50">
         <button id="userGear" onclick="toggleUserMenu()" 
@@ -62,36 +63,36 @@ $user = $stmt->fetch();
         </button>
         <div id="userMenu" class="hidden absolute left-0 top-12 mt-2 w-48 bg-light-secondary dark:bg-dark-secondary rounded-xl shadow-2xl border border-light-border dark:border-dark-border transition-all duration-300">
             <div class="p-4 border-b border-light-border dark:border-dark-border">
-                <p class="text-sm font-semibold text-light-text dark:text-dark-text">Olá, <?php echo htmlspecialchars($user['username']); ?>!</p>
+                <p class="text-sm font-semibold text-light-text dark:text-dark-text"><?php echo t('hello'); ?>, <?php echo htmlspecialchars($user['username']); ?>!</p>
                 <p class="text-xs text-light-text/70 dark:text-dark-text/70 mt-1"><?php echo htmlspecialchars($user['cpf']); ?></p>
             </div>
             
             <div class="p-2">
                 <a href="meus_produtos.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
-                    Meus Produtos
+                    <?php echo t('my_products'); ?>
                 </a>
 
                 <a href="../products/minhas_conversas.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
-                    Minhas Conversas
+                    <?php echo t('my_conversations'); ?>
                 </a>
 
                 <a href="editar_perfil.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
-                    Editar Perfil
+                    <?php echo t('edit_profile'); ?>
                 </a>
 
                 <a href="configuracoes.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
-                    Configurações
+                    <?php echo t('settings'); ?>
                 </a>
             </div>
             
             <div class="p-2 border-t border-light-border dark:border-dark-border">
                 <a href="../auth/logout.php" 
                    class="flex items-center px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
-                    Sair
+                    <?php echo t('logout'); ?>
                 </a>
             </div>
         </div>
@@ -109,10 +110,10 @@ $user = $stmt->fetch();
            class="flex-1 flex flex-col items-center justify-center bg-light-secondary dark:bg-dark-secondary border-r border-light-border dark:border-dark-border hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 group transition-all duration-300 cursor-pointer">
             <div class="text-6xl mb-6 group-hover:scale-110 transition-transform">📢</div>
             <h2 class="text-2xl font-semibold text-light-text dark:text-dark-text group-hover:text-light-accent dark:group-hover:text-dark-accent transition-colors text-center px-4">
-                Divulgar um Produto
+                <?php echo t('advertise_product'); ?>
             </h2>
             <p class="text-light-text/70 dark:text-dark-text/70 mt-2 text-center px-4">
-                Anuncie seus produtos para a comunidade
+                <?php echo t('advertise_product_desc'); ?>
             </p>
         </a>
 
@@ -120,10 +121,10 @@ $user = $stmt->fetch();
            class="flex-1 flex flex-col items-center justify-center bg-light-secondary dark:bg-dark-secondary border-l border-light-border dark:border-dark-border hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 group transition-all duration-300 cursor-pointer">
             <div class="text-6xl mb-6 group-hover:scale-110 transition-transform">🔍</div>
             <h2 class="text-2xl font-semibold text-light-text dark:text-dark-text group-hover:text-light-accent dark:group-hover:text-dark-accent transition-colors text-center px-4">
-                Encontrar um Produto
+                <?php echo t('find_product'); ?>
             </h2>
             <p class="text-light-text/70 dark:text-dark-text/70 mt-2 text-center px-4">
-                Descubra camisetas incríveis
+                <?php echo t('find_product_desc'); ?>
             </p>
         </a>
     </div>
