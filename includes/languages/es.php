@@ -49,7 +49,7 @@ return [
     'print_placeholder' => 'Ej: Lisa, Estampada, Personalizada, etc.',
     'publish_product' => 'Publicar Producto',
 
-    // Productos
+    // Produtos
     'find_products' => 'Encontrar Productos',
     'discover_amazing_t_shirts' => 'Descubre camisetas increíbles en la comunidad',
     'no_products_found' => 'No se encontraron productos',
@@ -61,4 +61,19 @@ return [
     'seller' => 'Vendedor',
     'contact_seller' => 'Contactar Vendedor',
     'back' => 'Volver',
+
+    // Mis Productos
+    'my_products' => 'Mis Productos',
+    'manage_your_products' => 'Gestiona todos tus productos anunciados',
+    'active_products' => 'Productos Activos',
+    'total_value' => 'Valor Total',
+    'visible' => 'Visibles',
+    'your_advertised_products' => 'Tus Productos Anunciados',
+    'no_products_advertised' => 'Aún no has anunciado ningún producto.',
+    'advertise_first_product' => 'Anunciar Primer Producto',
+    'confirm_delete_product' => '¿Estás seguro de que quieres eliminar el producto',
+    'edit' => 'Editar',
+    'delete' => 'Eliminar',
+    'my_account' => 'Mi Cuenta',
+    'new_product' => 'Nuevo Producto',
 ];

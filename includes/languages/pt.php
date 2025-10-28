@@ -127,4 +127,19 @@ return [
     'seller' => 'Vendedor',
     'contact_seller' => 'Entrar em Contato',
     'back' => 'Voltar',
+
+    // Meus Produtos
+    'my_products' => 'Meus Produtos',
+    'manage_your_products' => 'Gerencie todos os seus produtos anunciados',
+    'active_products' => 'Produtos Ativos',
+    'total_value' => 'Valor Total',
+    'visible' => 'Visíveis',
+    'your_advertised_products' => 'Seus Produtos Anunciados',
+    'no_products_advertised' => 'Você ainda não divulgou nenhum produto.',
+    'advertise_first_product' => 'Divulgar Primeiro Produto',
+    'confirm_delete_product' => 'Tem certeza que deseja excluir o produto',
+    'edit' => 'Editar',
+    'delete' => 'Excluir',
+    'my_account' => 'Minha Conta',
+    'new_product' => 'Novo Produto',
 ];

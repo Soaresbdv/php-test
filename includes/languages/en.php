@@ -129,4 +129,18 @@ return [
     'contact_seller' => 'Contact Seller',
     'back' => 'Back',
     
+    // My Products
+    'my_products' => 'My Products',
+    'manage_your_products' => 'Manage all your advertised products',
+    'active_products' => 'Active Products',
+    'total_value' => 'Total Value',
+    'visible' => 'Visible',
+    'your_advertised_products' => 'Your Advertised Products',
+    'no_products_advertised' => 'You have not advertised any products yet.',
+    'advertise_first_product' => 'Advertise First Product',
+    'confirm_delete_product' => 'Are you sure you want to delete the product',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'my_account' => 'My Account',
+    'new_product' => 'New Product',
 ];

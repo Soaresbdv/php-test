@@ -17,7 +17,6 @@ $stmt = $pdo->prepare("SELECT COUNT(*) as total, SUM(preco) as valor_total FROM 
 $stmt->execute([$_SESSION['user_id']]);
 $estatisticas = $stmt->fetch();
 
-
 if (isset($_SESSION['success'])) {
     $success_message = $_SESSION['success'];
     unset($_SESSION['success']);
@@ -31,7 +30,7 @@ if (isset($_SESSION['error'])) {
 <!DOCTYPE html>
 <html class="h-full">
 <head>
-    <title>Meus Produtos</title>
+    <title><?php echo t('my_products'); ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -73,7 +72,7 @@ if (isset($_SESSION['error'])) {
         });
 
         function confirmarExclusao(id, descricao) {
-            if (confirm(`Tem certeza que deseja excluir o produto "${descricao.substring(0, 50)}..."?`)) {
+            if (confirm(`<?php echo t('confirm_delete_product'); ?> "${descricao.substring(0, 50)}..."?`)) {
                 window.location.href = `excluir_produto.php?id=${id}`;
             }
         }
@@ -88,30 +87,30 @@ if (isset($_SESSION['error'])) {
         
         <div id="userMenu" class="hidden absolute left-0 top-12 mt-2 w-48 bg-light-secondary dark:bg-dark-secondary rounded-xl shadow-2xl border border-light-border dark:border-dark-border transition-all duration-300">
             <div class="p-4 border-b border-light-border dark:border-dark-border">
-                <p class="text-sm font-semibold text-light-text dark:text-dark-text">Minha Conta</p>
+                <p class="text-sm font-semibold text-light-text dark:text-dark-text"><?php echo t('my_account'); ?></p>
             </div>
             
             <div class="p-2">
                 <a href="dashboard.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
-                    Dashboard
+                    <?php echo t('dashboard'); ?>
                 </a>
                 
                 <a href="meus_produtos.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-accent dark:text-dark-accent bg-light-accent/10 dark:bg-dark-accent/10 rounded-lg transition-colors">
-                    Meus Produtos
+                    <?php echo t('my_products'); ?>
                 </a>
                 
                 <a href="divulgar_produto.php" 
                    class="flex items-center px-3 py-2 text-sm text-light-text dark:text-dark-text hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 rounded-lg transition-colors">
-                    Novo Produto
+                    <?php echo t('new_product'); ?>
                 </a>
             </div>
             
             <div class="p-2 border-t border-light-border dark:border-dark-border">
                 <a href="../auth/logout.php" 
                    class="flex items-center px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
-                    Sair
+                    <?php echo t('logout'); ?>
                 </a>
             </div>
         </div>
@@ -128,15 +127,15 @@ if (isset($_SESSION['error'])) {
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-8 mb-8 border border-light-border dark:border-dark-border transition-all">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-3xl font-bold text-light-text dark:text-dark-text">Meus Produtos</h1>
-                    <p class="text-light-text/70 dark:text-dark-text/70 mt-2">Gerencie todos os seus produtos anunciados</p>
+                    <h1 class="text-3xl font-bold text-light-text dark:text-dark-text"><?php echo t('my_products'); ?></h1>
+                    <p class="text-light-text/70 dark:text-dark-text/70 mt-2"><?php echo t('manage_your_products'); ?></p>
                 </div>
                 <div class="space-x-4">
                     <a href="divulgar_produto.php" class="bg-light-accent dark:bg-dark-accent text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition shadow-lg">
-                        + Novo Produto
+                        + <?php echo t('new_product'); ?>
                     </a>
                     <a href="dashboard.php" class="bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-600 transition">
-                        Voltar
+                        <?php echo t('back'); ?>
                     </a>
                 </div>
             </div>
@@ -162,7 +161,7 @@ if (isset($_SESSION['error'])) {
                     </div>
                     <div>
                         <p class="text-2xl font-bold text-light-text dark:text-dark-text"><?php echo $estatisticas['total'] ?? 0; ?></p>
-                        <p class="text-light-text/70 dark:text-dark-text/70">Produtos Ativos</p>
+                        <p class="text-light-text/70 dark:text-dark-text/70"><?php echo t('active_products'); ?></p>
                     </div>
                 </div>
             </div>
@@ -174,7 +173,7 @@ if (isset($_SESSION['error'])) {
                     </div>
                     <div>
                         <p class="text-2xl font-bold text-light-text dark:text-dark-text">R$ <?php echo number_format($estatisticas['valor_total'] ?? 0, 2, ',', '.'); ?></p>
-                        <p class="text-light-text/70 dark:text-dark-text/70">Valor Total</p>
+                        <p class="text-light-text/70 dark:text-dark-text/70"><?php echo t('total_value'); ?></p>
                     </div>
                 </div>
             </div>
@@ -186,22 +185,22 @@ if (isset($_SESSION['error'])) {
                     </div>
                     <div>
                         <p class="text-2xl font-bold text-light-text dark:text-dark-text"><?php echo count($produtos); ?></p>
-                        <p class="text-light-text/70 dark:text-dark-text/70">Visíveis</p>
+                        <p class="text-light-text/70 dark:text-dark-text/70"><?php echo t('visible'); ?></p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-8 border border-light-border dark:border-dark-border transition-all">
-            <h2 class="text-2xl font-bold text-light-text dark:text-dark-text mb-6">Seus Produtos Anunciados</h2>
+            <h2 class="text-2xl font-bold text-light-text dark:text-dark-text mb-6"><?php echo t('your_advertised_products'); ?></h2>
             
             <?php if (empty($produtos)): ?>
                 <div class="text-center py-12">
                     <div class="text-6xl mb-4"></div>
-                    <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-2">Nenhum produto encontrado</h3>
-                    <p class="text-light-text/70 dark:text-dark-text/70 mb-6">Você ainda não divulgou nenhum produto.</p>
+                    <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-2"><?php echo t('no_products_found'); ?></h3>
+                    <p class="text-light-text/70 dark:text-dark-text/70 mb-6"><?php echo t('no_products_advertised'); ?></p>
                     <a href="divulgar_produto.php" class="bg-light-accent dark:bg-dark-accent text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition inline-block">
-                        Divulgar Primeiro Produto
+                        <?php echo t('advertise_first_product'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -211,7 +210,7 @@ if (isset($_SESSION['error'])) {
                         <?php if (!empty($produto['foto'])): ?>
                             <div class="mb-4">
                                 <img src="../<?php echo htmlspecialchars($produto['foto']); ?>" 
-                                     alt="Foto do produto" 
+                                     alt="<?php echo t('product_photo'); ?>" 
                                      class="w-full h-48 object-cover rounded-xl mb-3">
                             </div>
                         <?php else: ?>
@@ -241,12 +240,12 @@ if (isset($_SESSION['error'])) {
 
                             <div class="grid grid-cols-2 gap-2 text-sm">
                                 <div>
-                                    <span class="text-light-text/70 dark:text-dark-text/70">Cor:</span>
+                                    <span class="text-light-text/70 dark:text-dark-text/70"><?php echo t('color'); ?>:</span>
                                     <span class="text-light-text dark:text-dark-text font-medium"><?php echo htmlspecialchars($produto['cor']); ?></span>
                                 </div>
                                 <?php if (!empty($produto['estampa'])): ?>
                                 <div>
-                                    <span class="text-light-text/70 dark:text-dark-text/70">Estampa:</span>
+                                    <span class="text-light-text/70 dark:text-dark-text/70"><?php echo t('print'); ?>:</span>
                                     <span class="text-light-text dark:text-dark-text font-medium"><?php echo htmlspecialchars($produto['estampa']); ?></span>
                                 </div>
                                 <?php endif; ?>
@@ -264,11 +263,11 @@ if (isset($_SESSION['error'])) {
                         <div class="mt-4 flex space-x-2">
                             <a href="editar_produto.php?id=<?php echo $produto['id_camiseta']; ?>" 
                                class="flex-1 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition text-sm text-center">
-                                Editar
+                                <?php echo t('edit'); ?>
                             </a>
                             <button onclick="confirmarExclusao(<?php echo $produto['id_camiseta']; ?>, '<?php echo addslashes($produto['descricao']); ?>')" 
                                     class="flex-1 bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600 transition text-sm">
-                                Excluir
+                                <?php echo t('delete'); ?>
                             </button>
                         </div>
                     </div>
