@@ -142,4 +142,11 @@ return [
     'delete' => 'Excluir',
     'my_account' => 'Minha Conta',
     'new_product' => 'Novo Produto',
+
+    // Meusp produtos
+    'my_conversations' => 'Minhas Conversas',
+    'your_product_conversations' => 'Suas conversas sobre produtos',
+    'no_conversations' => 'Nenhuma conversa',
+    'find_product_start_conversation' => 'Encontre um produto e inicie uma conversa!',
+    'product' => 'Produto',
 ];

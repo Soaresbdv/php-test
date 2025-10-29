@@ -62,10 +62,10 @@ return [
     'contact_seller' => 'Contactar Vendedor',
     'back' => 'Volver',
 
-    // Mis Productos
-    'my_products' => 'Mis Productos',
-    'manage_your_products' => 'Gestiona todos tus productos anunciados',
-    'active_products' => 'Productos Activos',
+    // Meus produtos
+    'my_products' => 'Meus Produtos',
+    'manage_your_products' => 'Gerenciar todos os seus produtos anunciados',
+    'active_products' => 'Produtos Ativos',
     'total_value' => 'Valor Total',
     'visible' => 'Visibles',
     'your_advertised_products' => 'Tus Productos Anunciados',
@@ -76,4 +76,11 @@ return [
     'delete' => 'Eliminar',
     'my_account' => 'Mi Cuenta',
     'new_product' => 'Nuevo Producto',
+
+    // minhas conversas
+    'my_conversations' => 'Mis Conversaciones',
+    'your_product_conversations' => 'Tus conversaciones sobre productos',
+    'no_conversations' => 'Ninguna conversación',
+    'find_product_start_conversation' => '¡Encuentra un producto e inicia una conversación!',
+    'product' => 'Producto',
 ];

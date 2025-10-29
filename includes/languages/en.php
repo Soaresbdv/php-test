@@ -143,4 +143,11 @@ return [
     'delete' => 'Delete',
     'my_account' => 'My Account',
     'new_product' => 'New Product',
+
+    // My Conversations
+    'my_conversations' => 'My Conversations',
+    'your_product_conversations' => 'Your conversations about products',
+    'no_conversations' => 'No conversations',
+    'find_product_start_conversation' => 'Find a product and start a conversation!',
+    'product' => 'Product',
 ];

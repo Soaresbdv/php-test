@@ -25,7 +25,7 @@ $conversas = $stmt->fetchAll();
 <!DOCTYPE html>
 <html class="h-full">
 <head>
-    <title>Minhas Conversas</title>
+    <title><?php echo t('my_conversations'); ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -65,15 +65,15 @@ $conversas = $stmt->fetchAll();
         <div class="bg-light-secondary dark:bg-dark-secondary rounded-2xl shadow-xl p-6 mb-6 border border-light-border dark:border-dark-border">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text">Minhas Conversas</h1>
-                    <p class="text-light-text/70 dark:text-dark-text/70 mt-1">Suas conversas sobre produtos</p>
+                    <h1 class="text-2xl font-bold text-light-text dark:text-dark-text"><?php echo t('my_conversations'); ?></h1>
+                    <p class="text-light-text/70 dark:text-dark-text/70 mt-1"><?php echo t('your_product_conversations'); ?></p>
                 </div>
                 <div class="space-x-3">
                     <a href="encontrar_produto.php" class="bg-light-accent dark:bg-dark-accent text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
-                        Buscar Produtos
+                        <?php echo t('find_products'); ?>
                     </a>
                     <a href="../dashboard/dashboard.php" class="bg-gray-500 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm">
-                        Voltar
+                        <?php echo t('back'); ?>
                     </a>
                 </div>
             </div>
@@ -83,8 +83,8 @@ $conversas = $stmt->fetchAll();
             <?php if (empty($conversas)): ?>
                 <div class="text-center py-12 bg-light-secondary dark:bg-dark-secondary rounded-2xl">
                     <div class="text-6xl mb-4">💬</div>
-                    <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-2">Nenhuma conversa</h3>
-                    <p class="text-light-text/70 dark:text-dark-text/70">Encontre um produto e inicie uma conversa!</p>
+                    <h3 class="text-xl font-semibold text-light-text dark:text-dark-text mb-2"><?php echo t('no_conversations'); ?></h3>
+                    <p class="text-light-text/70 dark:text-dark-text/70"><?php echo t('find_product_start_conversation'); ?></p>
                 </div>
             <?php else: ?>
                 <?php foreach ($conversas as $conversa): ?>
@@ -96,7 +96,7 @@ $conversas = $stmt->fetchAll();
                     <div class="flex items-center space-x-4">
                         <?php if (!empty($conversa['foto'])): ?>
                             <img src="../../<?php echo htmlspecialchars($conversa['foto']); ?>" 
-                                 alt="Produto" 
+                                 alt="<?php echo t('product'); ?>" 
                                  class="w-16 h-16 object-cover rounded-xl">
                         <?php else: ?>
                             <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-xl flex items-center justify-center">
