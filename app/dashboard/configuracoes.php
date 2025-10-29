@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="h-full bg-light-primary dark:bg-dark-primary transition-colors duration-300">
     <div class="fixed top-4 left-4 z-50">
         <a href="dashboard.php" 
-           class="p-2 rounded-full bg-light-accent dark:bg-dark-accent text-white shadow-lg hover:scale-110 transition-transform inline-block">
+           class="w-10 h-10 flex items-center justify-center bg-light-accent dark:bg-dark-accent text-white shadow-lg hover:scale-110 transition-transform rounded-full text-lg font-bold">
             ←
         </a>
     </div>
@@ -78,16 +78,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </button>
     </div>
 
+    <?php if ($message || isset($_GET['success'])): ?>
+        <div id="alertMessage" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md p-4 rounded-lg <?php echo ($message_type === 'success' || isset($_GET['success'])) ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-300 dark:border-green-700' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border border-red-300 dark:border-red-700'; ?> shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <?php if ($message_type === 'success' || isset($_GET['success'])): ?>
+                        <span class="text-green-500 mr-2">✅</span>
+                    <?php else: ?>
+                        <span class="text-red-500 mr-2">❌</span>
+                    <?php endif; ?>
+                    <span><?php echo isset($_GET['success']) ? t('settings_saved') : htmlspecialchars($message); ?></span>
+                </div>
+                <button onclick="closeAlert()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 ml-4">
+                    ✕
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div class="container mx-auto px-4 py-8 pt-20">
         <div class="max-w-2xl mx-auto">
-            <h1 class="text-3xl font-bold text-light-text dark:text-dark-text mb-8 text-center"><?php echo t('settings'); ?>
+            <h1 class="text-3xl font-bold text-light-text dark:text-dark-text mb-8 text-center">
+                <?php echo t('settings'); ?>
             </h1>
-
-            <?php if ($message || isset($_GET['success'])): ?>
-                <div class="mb-6 p-4 rounded-lg <?php echo ($message_type === 'success' || isset($_GET['success'])) ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'; ?>">
-                    <?php echo isset($_GET['success']) ? t('settings_saved') : htmlspecialchars($message); ?>
-                </div>
-            <?php endif; ?>
 
             <div class="bg-light-secondary dark:bg-dark-secondary rounded-xl shadow-lg border border-light-border dark:border-dark-border p-6">
                 <form method="POST" class="space-y-6">
@@ -135,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </label>
                         </div>
                     </div>
+
                     <div class="space-y-4">
                         <h3 class="text-lg font-semibold text-light-text dark:text-dark-text border-b border-light-border dark:border-dark-border pb-2">
                             <?php echo t('preferences'); ?>
@@ -157,9 +171,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </select>
                         </div>
                     </div>
+
                     <div class="pt-4">
                         <button type="submit" class="w-full bg-light-accent dark:bg-dark-accent text-white py-3 px-4 rounded-lg font-semibold hover:opacity-90 transition-opacity">
-                            <?php echo t('save_settings'); ?>
+                            💾 <?php echo t('save_settings'); ?>
                         </button>
                     </div>
                 </form>
@@ -180,6 +195,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         themeToggle.addEventListener('click', () => {
             html.classList.toggle('dark');
             localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        });
+
+        function closeAlert() {
+            const alert = document.getElementById('alertMessage');
+            if (alert) {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateX(-50%) translateY(-20px)';
+                alert.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                
+                setTimeout(() => {
+                    alert.remove();
+                }, 300);
+            }
+        }
+ 
+        document.addEventListener('DOMContentLoaded', function() {
+            const alert = document.getElementById('alertMessage');
+            
+            if (alert) {
+                setTimeout(() => {
+                    closeAlert();
+                }, 2000);
+                
+                alert.addEventListener('click', function(e) {
+                    if (!e.target.closest('button')) {
+                        closeAlert();
+                    }
+                });
+            }
         });
     </script>
 </body>
