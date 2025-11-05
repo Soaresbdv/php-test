@@ -103,12 +103,26 @@ $produtos = $stmt->fetchAll();
 </head>
 <body class="h-full bg-light-primary dark:bg-dark-primary transition-colors duration-300">
     <div class="fixed top-4 right-4 z-50 flex space-x-2">
-        <button id="filterToggle" class="p-2 rounded-full bg-light-accent dark:bg-dark-accent text-white shadow-lg hover:scale-110 transition-transform">
-            <span class="text-sm">🔍</span>
+        <a href="carrinho.php" class="p-3 rounded-full bg-light-accent dark:bg-dark-accent text-white shadow-lg hover:scale-110 transition-transform relative">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            <span id="cartCounter" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">
+                0
+            </span>
+        </a>
+        <button id="filterToggle" class="p-3 rounded-full bg-light-accent dark:bg-dark-accent text-white shadow-lg hover:scale-110 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"/>
+            </svg>
         </button>
-        <button id="themeToggle" class="p-2 rounded-full bg-light-accent dark:bg-dark-accent text-white shadow-lg hover:scale-110 transition-transform">
-            <span class="dark:hidden">🌙</span>
-            <span class="hidden dark:inline">☀️</span>
+        <button id="themeToggle" class="p-3 rounded-full bg-light-accent dark:bg-dark-accent text-white shadow-lg hover:scale-110 transition-transform">
+            <svg class="w-6 h-6 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+            <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
         </button>
     </div>
 
@@ -322,12 +336,18 @@ $produtos = $stmt->fetchAll();
                             </div>
                         </div>
                     </div>
-
-                    <div class="mt-4">
+                    <div class="mt-4 space-y-2">
                         <a href="iniciar_chat.php?id_produto=<?php echo $produto['id_camiseta']; ?>&id_vendedor=<?php echo $produto['id_usuario']; ?>" 
                            class="block w-full bg-light-accent dark:bg-dark-accent text-white py-2 rounded-lg font-semibold hover:opacity-90 transition text-sm text-center">
                             <?php echo t('contact_seller'); ?>
                         </a>
+                        
+                        <button type="button" 
+                                onclick="adicionarAoCarrinho(<?php echo $produto['id_camiseta']; ?>, '<?php echo htmlspecialchars($produto['tamanho']); ?>', '<?php echo htmlspecialchars($produto['cor']); ?>')"
+                                class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition text-sm flex items-center justify-center space-x-2">
+                            <span></span>
+                            <span>Adicionar ao Carrinho</span>
+                        </button>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -335,6 +355,8 @@ $produtos = $stmt->fetchAll();
         </div>
     </div>
 
+    <div id="toastContainer" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 space-y-2"></div>
+    
     <script>
         const themeToggle = document.getElementById('themeToggle');
         const filterToggle = document.getElementById('filterToggle');
@@ -373,6 +395,110 @@ $produtos = $stmt->fetchAll();
 
         clearFilters.addEventListener('click', () => {
             window.location.href = window.location.pathname;
+        });
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastId = 'toast-' + Date.now();
+            
+            const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+            const icon = type === 'success' ? '✅' : '❌';
+            
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `${bgColor} text-white px-6 py-4 rounded-lg shadow-xl transform transition-all duration-300 max-w-md opacity-0 -translate-y-2`;
+            toast.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <span class="text-lg flex-shrink-0">${icon}</span>
+                    <span class="flex-1 text-sm font-medium">${message}</span>
+                    <button onclick="closeToast('${toastId}')" class="text-white hover:text-gray-200 flex-shrink-0">
+                        ✕
+                    </button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', '-translate-y-2');
+                toast.classList.add('opacity-100', 'translate-y-0');
+            }, 10);
+            setTimeout(() => {
+                closeToast(toastId);
+            }, 3000);
+        }
+        
+        function closeToast(toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+        }
+        
+        function closeToast(toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+        }
+        
+        async function adicionarAoCarrinho(idProduto, tamanho, cor) {
+            try {
+                const formData = new FormData();
+                formData.append('id_produto', idProduto);
+                formData.append('tamanho', tamanho);
+                formData.append('cor', cor);
+                
+                const response = await fetch('adicionar_carrinho.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showToast('Produto adicionado ao carrinho!', 'success');
+                    atualizarContadorCarrinho();
+                } else {
+                    showToast(' ' + (result.message || 'Erro ao adicionar produto'), 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                showToast('Erro de conexão', 'error');
+            }
+        }
+        
+        async function carregarContadorCarrinho() {
+            try {
+                const response = await fetch('get_contador_carrinho.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const counter = document.getElementById('cartCounter');
+                    counter.textContent = data.total;
+                    if (data.total > 0) {
+                        counter.classList.remove('hidden');
+                    } else {
+                        counter.classList.add('hidden');
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar contador:', error);
+            }
+        }
+        
+        async function atualizarContadorCarrinho() {
+            await carregarContadorCarrinho();
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarContadorCarrinho();
         });
     </script>
 </body>
